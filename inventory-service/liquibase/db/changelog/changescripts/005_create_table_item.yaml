@@ -1,0 +1,51 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009
+      author: Jenny
+      changes:
+        - createSequence:
+            schemaName: public
+            sequenceName: compartment_seq
+            startValue: 1
+            incrementBy: 1
+  - changeSet:
+      id: 010
+      author: Jenny
+      changes:
+        - createTable:
+            tableName: item
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiration_date
+                  type: date
+              - column:
+                  name: category_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_category
+                    references: category(id)
+                    onDelete: SET NULL
+              - column:
+                  name: compartment_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_compartment
+                    references: compartment(id)
