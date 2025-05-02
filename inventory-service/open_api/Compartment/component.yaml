@@ -1,0 +1,12 @@
+CompartmentDto:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+      readOnly: true
+    name:
+      type: string
+    storageunitId:
+      type: integer
+      format: int64

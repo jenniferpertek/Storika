@@ -1,0 +1,159 @@
+/v1/items:
+  get:
+    tags:
+      - item
+    operationId: getAllItems
+    responses:
+      '200':
+        description: OK
+        content:
+          'application/json':
+            schema:
+              type: array
+              items:
+                $ref: './component.yaml#/ItemDto'
+      '404':
+        description: Not Found
+        content:
+          'application/json':
+            schema:
+              $ref: >-
+                ../common/component.yaml#/ApiError
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: >-
+                ../common/component.yaml#/ApiError
+/v1/item:
+  post:
+    tags:
+      - item
+    operationId: createItem
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './component.yaml#/ItemDto'
+    responses:
+      '201':
+        description: Created
+        content:
+          application/json:
+            schema:
+              $ref: './component.yaml#/ItemDto'
+      '400':
+        description: Invalid Request
+        content:
+          application/json:
+            schema:
+              $ref: '../common/component.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '../common/component.yaml#/ApiError'
+/v1/item/{itemId}:
+  get:
+    tags:
+      - item
+    operationId: getItemById
+    parameters:
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    responses:
+      '200':
+        description: OK
+        content:
+          'application/json':
+            schema:
+              $ref: './component.yaml#/ItemDto'
+      '404':
+        description: Not Found
+        content:
+          'application/json':
+            schema:
+              $ref: >-
+                ../common/component.yaml#/ApiError
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: >-
+                ../common/component.yaml#/ApiError
+  patch:
+    tags:
+      - item
+    operationId: updateItem
+    parameters:
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './component.yaml#/ItemDto'
+    responses:
+      '200':
+        description: Updated
+        content:
+          application/json:
+            schema:
+              $ref: './component.yaml#/ItemDto'
+      '400':
+        description: Invalid Request
+        content:
+          application/json:
+            schema:
+              $ref: '../common/component.yaml#/ApiError'
+      '404':
+        description: Not Found
+        content:
+          application/json:
+            schema:
+              $ref: '../common/component.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '../common/component.yaml#/ApiError'
+  delete:
+    tags:
+      - item
+    operationId: deleteItem
+    parameters:
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    responses:
+      '204':
+        description: Deleted (no content)
+      '404':
+        description: Not Found
+        content:
+          application/json:
+            schema:
+              $ref: '../common/component.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '../common/component.yaml#/ApiError'

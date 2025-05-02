@@ -1,0 +1,61 @@
+/v1/storageunits:
+  get:
+    tags:
+      - storage-unit
+    operationId: getAllStorageUnits
+    responses:
+      '200':
+        description: OK
+        content:
+          'application/json':
+            schema:
+              type: array
+              items:
+                $ref: './component.yaml#/StorageUnitDto'
+      '404':
+        description: Not Found
+        content:
+          'application/json':
+            schema:
+              $ref: >-
+                ../common/component.yaml#/ApiError
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: >-
+                ../common/component.yaml#/ApiError
+/v1/storageunit/{storageUnitId}:
+  get:
+    tags:
+      - storage-unit
+    operationId: getStorageUnitById
+    parameters:
+      - name: storageUnitId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+    responses:
+      '200':
+        description: OK
+        content:
+          'application/json':
+            schema:
+              $ref: './component.yaml#/StorageUnitDto'
+      '404':
+        description: Not Found
+        content:
+          'application/json':
+            schema:
+              $ref: >-
+                ../common/component.yaml#/ApiError
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: >-
+                ../common/component.yaml#/ApiError
