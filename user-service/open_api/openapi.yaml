@@ -1,0 +1,14 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v1
+servers:
+  - url: http://localhost:5050/api
+    description: Generated server url
+paths:
+  /v1/auth/register:
+    $ref: './AppUser/endpoint.yaml#/%2Fv1%2Fauth%2Fregister'
+  /v1/auth/login:
+      $ref: './AppUser/endpoint.yaml#/%2Fv1%2Fauth%2Flogin'
+  /v1/auth/me:
+      $ref: './AppUser/endpoint.yaml#/%2Fv1%2Fauth%2Fme'
