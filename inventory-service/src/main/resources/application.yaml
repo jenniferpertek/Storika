@@ -27,3 +27,9 @@ spring:
   jackson:
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
     time-zone: UTC
+
+logging:
+  file:
+    name: /var/log/inventory-service.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
