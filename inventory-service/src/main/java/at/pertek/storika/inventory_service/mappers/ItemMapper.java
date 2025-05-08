@@ -1,9 +1,9 @@
 package at.pertek.storika.inventory_service.mappers;
 
-import at.pertek.storagesystem.backend.inventory.dto.ItemDto;
-import at.pertek.storagesystem.backend.inventory.entity.Category;
-import at.pertek.storagesystem.backend.inventory.entity.Compartment;
-import at.pertek.storagesystem.backend.inventory.entity.Item;
+import at.pertek.storika.inventory_service.dto.ItemDto;
+import at.pertek.storika.inventory_service.entities.Category;
+import at.pertek.storika.inventory_service.entities.Compartment;
+import at.pertek.storika.inventory_service.entities.Item;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

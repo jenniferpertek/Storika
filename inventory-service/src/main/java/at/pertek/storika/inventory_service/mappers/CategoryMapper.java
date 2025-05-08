@@ -1,7 +1,7 @@
 package at.pertek.storika.inventory_service.mappers;
 
-import at.pertek.storagesystem.backend.inventory.dto.CategoryDto;
-import at.pertek.storagesystem.backend.inventory.entity.Category;
+import at.pertek.storika.inventory_service.dto.CategoryDto;
+import at.pertek.storika.inventory_service.entities.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;

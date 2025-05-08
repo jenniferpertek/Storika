@@ -1,11 +1,11 @@
 package at.pertek.storika.inventory_service.services;
 
-import at.pertek.inventoryservice.commons.exception.EntryNotFoundException;
-import at.pertek.inventoryservice.commons.exception.ErrorCode;
-import at.pertek.inventoryservice.inventory.dto.ItemDto;
-import at.pertek.inventoryservice.inventory.entity.Item;
-import at.pertek.inventoryservice.inventory.mapper.ItemMapper;
-import at.pertek.inventoryservice.inventory.repository.ItemRepository;
+import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundException;
+import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
+import at.pertek.storika.inventory_service.dto.ItemDto;
+import at.pertek.storika.inventory_service.entities.Item;
+import at.pertek.storika.inventory_service.mappers.ItemMapper;
+import at.pertek.storika.inventory_service.repositories.ItemRepository;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

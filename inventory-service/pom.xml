@@ -2,39 +2,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>at.pertek.storika</groupId>
+		<artifactId>storika</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<groupId>at.pertek.storika</groupId>
+
 	<artifactId>inventory-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>inventory-service</name>
 	<description>Service to manage the inventory part of the Storika Application.</description>
-	<url/>
+
 	<properties>
 		<java.version>21</java.version>
 
-		<checkstyle-maven-plugin.version>3.4.0</checkstyle-maven-plugin.version>
-		<checkstyle.version>10.23.0</checkstyle.version>
 		<jacoco.version>0.8.13</jacoco.version>
 		<failsafe.jacoco.args>-javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco.exec</failsafe.jacoco.args>
-		<git-commit-id-maven-plugin.version>8.0.2</git-commit-id-maven-plugin.version>
-		<hibernate.version>6.6.4.Final</hibernate.version>
-		<jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
-		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
-		<maven.failsafe.skipTests>false</maven.failsafe.skipTests>
-		<maven-failsafe-plugin.version>3.3.0</maven-failsafe-plugin.version>
-		<maven-javadoc-plugin.version>3.7.0</maven-javadoc-plugin.version>
-		<maven.surefire.skipTests>false</maven.surefire.skipTests>
-		<openapi-generator-maven-plugin.version>7.12.0</openapi-generator-maven-plugin.version>
-		<org-junit-jupiter.version>5.12.1</org-junit-jupiter.version>
-		<org-mockito.version>5.17.0</org-mockito.version>
 		<org-springdoc.version>2.8.6</org-springdoc.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -104,7 +93,7 @@
 		<dependency>
 			<groupId>org.openapitools</groupId>
 			<artifactId>jackson-databind-nullable</artifactId>
-			<version>${jackson-databind-nullable.version}</version>
+			<version>0.2.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -119,15 +108,6 @@
 	</dependencies>
 
 	<build>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<includes>
-					<include>**/*.yaml</include>
-					<include>**/*.json</include>
-				</includes>
-			</testResource>
-		</testResources>
 		<resources>
 			<resource>
 				<filtering>true</filtering>
@@ -138,17 +118,11 @@
 			</resource>
 		</resources>
 
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.sonarsource.scanner.maven</groupId>
-					<artifactId>sonar-maven-plugin</artifactId>
-					<version>${sonar-maven-plugin.version}</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 		<plugins>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -285,7 +259,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok-mapstruct-binding</artifactId>
-							<version>${lombok-mapstruct-binding.version}</version>
+							<version>0.2.0</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -294,16 +268,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version>
-				<configuration>
-					<defaultVersion>${project.version}</defaultVersion>
-					<sourcepath>target/generated-sources/delombok</sourcepath>
-				</configuration>
 			</plugin>
 
 			<plugin>
@@ -387,25 +351,18 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${checkstyle-maven-plugin.version}</version>
+				<version>3.4.0</version>
 				<configuration>
-					<configLocation>../../config/checkstyle/google_checks_custom.xml</configLocation>
-					<suppressionsLocation>../../config/checkstyle/checkstyle-suppression.xml</suppressionsLocation>
-					<!-- note: domain folder is excluded because it's jooq generated files -->
-					<excludes>target/generated-sources/**/*,**/domain/**</excludes>
-					<configLocation>config/google_checks_custom.xml</configLocation>
-					<violationSeverity>warning</violationSeverity>
-					<failOnViolation>true</failOnViolation>
-					<failsOnError>true</failsOnError>
-					<violationIgnore>false</violationIgnore>
+					<configLocation>${checkstyle.config.dir}/google_checks_custom.xml</configLocation>
+					<suppressionsFileExpression>${checkstyle.config.dir}/checkstyle-suppression.xml</suppressionsFileExpression>
 					<consoleOutput>true</consoleOutput>
-					<rulesFiles>config/google_checks_custom.xml</rulesFiles>
+					<failsOnError>true</failsOnError>
 				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>${checkstyle.version}</version>
+						<version>10.23.0</version>
 					</dependency>
 				</dependencies>
 				<executions>
@@ -420,10 +377,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${maven-failsafe-plugin.version}</version>
+				<version>3.3.0</version>
 				<configuration>
 					<argLine>${failsafe.jacoco.args}</argLine>
-					<skipTests>${maven.failsafe.skipTests}</skipTests>
+					<skipTests>false</skipTests>
 					<failIfNoTests>false</failIfNoTests>
 					<!-- allow argLine to be modified by other plugins, e.g. jacoco -->
 
@@ -449,7 +406,7 @@
 			<plugin>
 				<groupId>io.github.git-commit-id</groupId>
 				<artifactId>git-commit-id-maven-plugin</artifactId>
-				<version>${git-commit-id-maven-plugin.version}</version>
+				<version>8.0.2</version>
 				<configuration>
 					<includeOnlyProperties>
 						<property>git.branch</property>
@@ -463,7 +420,7 @@
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>${openapi-generator-maven-plugin.version}</version>
+				<version>7.12.0</version>
 				<executions>
 					<execution>
 						<goals>

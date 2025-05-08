@@ -1,7 +1,8 @@
 package at.pertek.storika.inventory_service.endpoints;
 
-import at.pertek.inventoryservice.dto.ItemDto;
-import at.pertek.inventoryservice.service.ItemService;
+import at.pertek.storika.inventory_service.dto.ItemDto;
+import at.pertek.storika.inventory_service.endpoint.ItemApi;
+import at.pertek.storika.inventory_service.services.ItemService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

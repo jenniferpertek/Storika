@@ -1,11 +1,11 @@
 package at.pertek.storika.inventory_service.services;
 
-import at.pertek.storagesystem.backend.commons.exception.EntryNotFoundException;
-import at.pertek.storagesystem.backend.commons.exception.ErrorCode;
-import at.pertek.inventoryservice.dto.CategoryDto;
-import at.pertek.inventoryservice.entity.Category;
-import at.pertek.inventoryservice.mapper.CategoryMapper;
-import at.pertek.inventoryservice.repository.CategoryRepository;
+import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundException;
+import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
+import at.pertek.storika.inventory_service.dto.CategoryDto;
+import at.pertek.storika.inventory_service.entities.Category;
+import at.pertek.storika.inventory_service.mappers.CategoryMapper;
+import at.pertek.storika.inventory_service.repositories.CategoryRepository;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

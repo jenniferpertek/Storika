@@ -1,7 +1,8 @@
 package at.pertek.storika.inventory_service.endpoints;
 
-import at.pertek.inventoryservice.dto.CategoryDto;
-import at.pertek.inventoryservice.service.CategoryService;
+import at.pertek.storika.inventory_service.dto.CategoryDto;
+import at.pertek.storika.inventory_service.endpoint.CategoryApi;
+import at.pertek.storika.inventory_service.services.CategoryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

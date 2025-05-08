@@ -6,11 +6,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import at.pertek.inventoryservice.commons.exception.EntryNotFoundException;
-import at.pertek.inventoryservice.commons.exception.ErrorCode;
-import at.pertek.inventoryservice.commons.exception.RestExceptionHandler;
-import at.pertek.inventoryservice.inventory.dto.CategoryDto;
-import at.pertek.inventoryservice.inventory.service.CategoryService;
+import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundException;
+import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
+import at.pertek.storika.inventory_service.commons.exception.RestExceptionHandler;
+import at.pertek.storika.inventory_service.dto.ItemDto;
+import at.pertek.storika.inventory_service.endpoints.ItemEndpoint;
+import at.pertek.storika.inventory_service.services.ItemService;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -21,24 +22,24 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(CategoryEndpoint.class)
+@WebMvcTest(ItemEndpoint.class)
 @AutoConfigureMockMvc(addFilters = false)
 @Import(RestExceptionHandler.class)
-public class CategoryEndpointTest {
+public class ItemEndpointTest {
 
   @Autowired
   private MockMvc mockMvc;
 
   @MockitoBean
-  private CategoryService categoryService;
+  private ItemService itemService;
 
   @Test
-  void testGetAllCategories() throws Exception {
-    List<CategoryDto> mockCategories = List.of(mock(CategoryDto.class), mock(CategoryDto.class));
-    when(categoryService.getAllCategories()).thenReturn(mockCategories);
+  void testGetAllItems() throws Exception {
+    List<ItemDto> mockItems = List.of(mock(ItemDto.class), mock(ItemDto.class));
+    when(itemService.getAllItems()).thenReturn(mockItems);
 
 
-    mockMvc.perform(get("/v1/categories"))
+    mockMvc.perform(get("/v1/items"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", Matchers.hasSize(2)))
         .andReturn();
@@ -46,29 +47,30 @@ public class CategoryEndpointTest {
   }
 
   @Test
-  void testGetCategoryById_CategoryFound() throws Exception {
-    CategoryDto dto = CategoryDto.builder()
+  void testGetItemById_ItemFound() throws Exception {
+    ItemDto dto = ItemDto.builder()
         .id(1L)
-        .name("Food")
+        .name("Milk")
+        .quantity(2)
         .build();
 
-    when(categoryService.getCategoryById(1L)).thenReturn(dto);
+    when(itemService.getItemById(1L)).thenReturn(dto);
 
-    mockMvc.perform(get("/v1/category/{categoryId}", 1L))
+    mockMvc.perform(get("/v1/item/{itemId}", 1L))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value(1))
-        .andExpect(jsonPath("$.name").value("Food"))
+        .andExpect(jsonPath("$.name").value("Milk"))
+        .andExpect(jsonPath("$.quantity").value(2))
         .andReturn();
   }
 
   @Test
-  void testGetCategoryById_CategoryNotFound() throws Exception {
-    when(categoryService.getCategoryById(111L)).thenThrow(new EntryNotFoundException(ErrorCode.INVALID_ID));
+  void testGetItemById_ItemNotFound() throws Exception {
+    when(itemService.getItemById(111L)).thenThrow(new EntryNotFoundException(ErrorCode.INVALID_ID));
 
-    mockMvc.perform(get("/v1/category/{categoryId}", 111L))
+    mockMvc.perform(get("/v1/item/{itemId}", 111L))
         .andExpect(status().isNotFound())
         .andReturn();
   }
-
 
 }

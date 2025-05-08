@@ -1,6 +1,6 @@
 package at.pertek.storika.inventory_service.repositories;
 
-import at.pertek.inventoryservice.entity.Item;
+import at.pertek.storika.inventory_service.entities.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

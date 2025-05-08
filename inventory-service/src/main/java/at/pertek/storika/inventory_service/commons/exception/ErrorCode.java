@@ -1,4 +1,4 @@
-package at.pertek.inventoryservice.commons.exception;
+package at.pertek.storika.inventory_service.commons.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

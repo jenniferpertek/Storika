@@ -1,9 +1,9 @@
 package at.pertek.storika.inventory_service.services;
 
-import at.pertek.inventoryservice.commons.exception.EntryNotFoundException;
-import at.pertek.inventoryservice.commons.exception.ErrorCode;
-import at.pertek.inventoryservice.inventory.entity.Compartment;
-import at.pertek.inventoryservice.inventory.repository.CompartmentRepository;
+import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundException;
+import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
+import at.pertek.storika.inventory_service.entities.Compartment;
+import at.pertek.storika.inventory_service.repositories.CompartmentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
