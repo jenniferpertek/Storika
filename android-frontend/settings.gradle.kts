@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "android-frontend"
 include(":app")
+include(":generated:inventory-client")
+project(":generated:inventory-client").projectDir = file("generated/inventory-client")
+
