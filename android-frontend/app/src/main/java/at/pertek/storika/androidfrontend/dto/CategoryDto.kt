@@ -1,6 +1,6 @@
 package at.pertek.storika.androidfrontend.dto
 
-data class `CategoryDto.kt`(
+data class CategoryDto (
     val id: Long? = null,
     val name: String
 )

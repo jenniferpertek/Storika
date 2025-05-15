@@ -2,7 +2,7 @@ package at.pertek.storika.androidfrontend.dto
 
 import java.time.LocalDate
 
-data class ItemDto(
+data class ItemDto (
     val id: Long? = null,
     val name: String,
     val quantity: Int,
