@@ -1,51 +1,94 @@
 databaseChangeLog:
   - changeSet:
-      id: 009
-      author: Jenny
-      changes:
-        - createSequence:
-            schemaName: public
-            sequenceName: compartment_seq
-            startValue: 1
-            incrementBy: 1
-  - changeSet:
-      id: 010
+      id: 005
       author: Jenny
       changes:
         - createTable:
-            tableName: item
+            tableName: items
             columns:
               - column:
-                  name: id
-                  type: bigserial
+                  name: item_id
+                  type: UUID
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: name
-                  type: varchar(255)
+                  type: VARCHAR(255)
                   constraints:
                     nullable: false
               - column:
                   name: quantity
-                  type: int
+                  type: DECIMAL(10, 2)
+                  defaultValueNumeric: 1
                   constraints:
                     nullable: false
               - column:
-                  name: expiration_date
-                  type: date
-              - column:
-                  name: category_id
-                  type: bigint
+                  name: unit
+                  type: VARCHAR(50)
                   constraints:
                     nullable: true
-                    foreignKeyName: fk_category
-                    references: category(id)
-                    onDelete: SET NULL
               - column:
-                  name: compartment_id
-                  type: bigint
+                  name: purchase_date
+                  type: DATE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: expiration_date
+                  type: DATE
+                  constraints:
+                    nullable: true
+              - column:
+                  name: notes
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: category_id
+                  type: UUID
+                  constraints:
+                    nullable: true
+              - column:
+                  name: storage_unit_id
+                  type: UUID
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_compartment
-                    references: compartment(id)
+              - column:
+                  name: compartment_id
+                  type: UUID
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: items
+            baseColumnNames: category_id
+            referencedTableName: categories
+            referencedColumnNames: category_id
+            constraintName: fk_items_category
+            onDelete: SET NULL
+        - addForeignKeyConstraint:
+            baseTableName: items
+            baseColumnNames: storage_unit_id
+            referencedTableName: storage_units
+            referencedColumnNames: storage_unit_id
+            constraintName: fk_items_storage_unit
+            onDelete: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: items
+            baseColumnNames: compartment_id
+            referencedTableName: compartments
+            referencedColumnNames: compartment_id
+            constraintName: fk_items_compartment
+            onDelete: SET NULL

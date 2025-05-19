@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004
+      author: Jenny
+      changes:
+        - createTable:
+            tableName: compartments
+            columns:
+              - column:
+                  name: compartment_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: storage_unit_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: compartments
+            baseColumnNames: storage_unit_id
+            referencedTableName: storage_units
+            referencedColumnNames: storage_unit_id
+            constraintName: fk_compartments_storage_units
+            onDelete: CASCADE
+        - addUniqueConstraint:
+            tableName: compartments
+            columnNames: storage_unit_id, name
+            constraintName: uk_compartment_name_storage_unit

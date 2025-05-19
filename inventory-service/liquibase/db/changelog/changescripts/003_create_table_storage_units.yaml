@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003
+      author: Jenny
+      changes:
+        - createTable:
+            tableName: storage_units
+            columns:
+              - column:
+                  name: storage_unit_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: location_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: storage_units
+            baseColumnNames: location_id
+            referencedTableName: locations
+            referencedColumnNames: location_id
+            constraintName: fk_storage_unit_location
+            onDelete: RESTRICT
+        - addUniqueConstraint:
+            tableName: storage_unit
+            columnNames: name, location_id
+            constraintName: uk_storage_unit_name_location
