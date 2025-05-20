@@ -1,0 +1,167 @@
+/v1/storage-units:
+  get:
+    summary: Get all storage units
+    operationId: getAllStorageUnits
+    tags:
+      - storage-unit
+    parameters:
+      - name: locationId
+        in: query
+        required: false
+        description: Filter storage units by locationId
+        schema:
+          type: string
+          format: uuid
+      - name: name
+        in: query
+        required: false
+        description: Filter storage units by name
+        schema:
+          type: string
+    responses:
+      '200':
+        description: List of storage units.
+        content:
+          'application/json':
+            schema:
+              type: array
+              items:
+                $ref: '../schema/StorageUnit.yaml#/StorageUnitDto'
+      '404':
+        description: Storage unit not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  post:
+    summary: Create a new storage unit
+    operationId: createStorageUnit
+    tags:
+      - storage-unit
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            $ref: '../schema/StorageUnit.yaml#/StorageUnitDto'
+    responses:
+      '201':
+        description: Storage unit created successfully.
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/StorageUnit.yaml#/StorageUnitDto'
+      '400':
+        description: Invalid input
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+
+/v1/storage-unit/{storageUnitId}:
+  parameters:
+    - name: storageUnitId
+      in: path
+      required: true
+      description: ID of the storage unit
+      schema:
+        type: string
+        format: uuid
+  get:
+    summary: Get a storage unit by ID
+    operationId: getStorageUnitById
+    tags:
+      - storage-unit
+    responses:
+      '200':
+        description: Storage unit found.
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/StorageUnit.yaml#/StorageUnitDto'
+      '404':
+        description: Storage unit not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  patch:
+    summary: Partially update a storage unit by ID
+    operationId: patchStorageUnit
+    tags:
+      - storage-unit
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            $ref: '../schema/StorageUnit.yaml#/StorageUnitPatchDto'
+    responses:
+      '200':
+        description: Storage unit updated successfully.
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/StorageUnit.yaml#/StorageUnitDto'
+      '400':
+        description: Invalid input
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '404':
+        description: Storage unit not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  delete:
+    summary: Delete a storage unit by ID
+    operationId: deleteStorageUnit
+    tags:
+      - storage-unit
+    responses:
+      '204':
+        description: Storage unit deleted successfully.
+      '404':
+        description: Storage unit not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '409':
+        description: Conflict - Storage unit cannot be deleted as it contains items.
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'

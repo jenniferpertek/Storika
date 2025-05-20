@@ -20,9 +20,8 @@ databaseChangeLog:
               - column:
                   name: quantity
                   type: DECIMAL(10, 2)
-                  defaultValueNumeric: 1
                   constraints:
-                    nullable: false
+                    nullable: true
               - column:
                   name: unit
                   type: VARCHAR(50)
@@ -70,7 +69,6 @@ databaseChangeLog:
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
-
         - addForeignKeyConstraint:
             baseTableName: items
             baseColumnNames: category_id

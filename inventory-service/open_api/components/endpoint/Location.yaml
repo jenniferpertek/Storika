@@ -1,0 +1,160 @@
+/v1/locations:
+  get:
+    summary: Get all locations
+    operationId: getAllLocations
+    tags:
+      - location
+    parameters:
+      - name: name
+        in: query
+        required: false
+        description: Filter locations by name.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A list of locations.
+        content:
+          'application/json':
+            schema:
+              type: array
+              items:
+                $ref: '../schema/Location.yaml#/LocationDto'
+      '404':
+        description: Location not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  post:
+    summary: Create a new location
+    operationId: createLocation
+    tags:
+      - location
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            $ref: '../schema/Location.yaml#/LocationDto'
+    response:
+      '201':
+        description: Location created successfully.
+        content:
+            application/json:
+              schema:
+                $ref: '../schema/Location.yaml#/LocationDto'
+      '400':
+        description: Invalid Input
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+
+/v1/location/{locationId}:
+  parameters:
+    - name: locationId
+      in: path
+      required: true
+      description: The ID of the location to retrieve.
+      schema:
+        type: string
+        format: uuid
+  get:
+    summary: Get location by ID
+    operationId: getLocationById
+    tags:
+      - location
+    responses:
+      '200':
+        description: Location found
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/Location.yaml#/LocationDto'
+      '404':
+        description: Location not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  patch:
+    summary: Partially update a location by ID
+    operationId: patchLocation
+    tags:
+      - location
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            $ref: '../schema/Location.yaml#/LocationPatchDto'
+    responses:
+      '200':
+        description: Location updated successfully
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/Location.yaml#/LocationDto'
+      '400':
+        description: Invalid Input
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '404':
+        description: Location not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  delete:
+    summary: Delete a location by ID
+    operationId: deleteLocation
+    tags:
+      - location
+    responses:
+      '204':
+        description: Location deleted successfully
+      '404':
+        description: Location not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '409':
+        description: Conflict - Location cannot be deleted as it contains storage units.
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'

@@ -1,0 +1,52 @@
+CompartmentDto:
+  type: object
+  description: Represents a compartment within a storage unit.
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Unique identifier for the compartment.
+      readOnly: true
+    name:
+      type: string
+      description: The name of the compartment (e.g., "Crisper Drawer", "Top Shelf").
+      example: Shelf 2
+    description:
+      type: string
+      nullable: true
+      description: Optional description of the compartment.
+    storageUnitId:
+      type: string
+      format: uuid
+      description: The ID of the storage unit this compartment belongs to.
+    createdAt:
+      type: string
+      format: date-time
+      description: Timestamp when the compartment was created.
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      description: Timestamp when the compartment was last updated.
+      readOnly: true
+  required:
+    - name
+    - storageUnitId
+
+CompartmentPatchDto:
+  type: object
+  description: Data for partially updating a Compartment.
+  properties:
+    name:
+      type: string
+      description: The new name of the compartment.
+      # Not in 'required' list
+    description:
+      type: string
+      nullable: true # Allows explicitly setting description to null
+      description: The new description for the compartment.
+    storageUnitId:
+      type: string
+      format: uuid
+      description: The new ID of the storage unit this compartment belongs to.
+      nullable: true 

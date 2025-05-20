@@ -1,0 +1,198 @@
+/v1/items:
+  get:
+    summary: Get all items
+    operationId: getAllItems
+    tags:
+      - item
+    parameters:
+      - name: categoryId
+        in: query
+        required: false
+        description: Filter items by category ID.
+        schema:
+          type: string
+          format: uuid
+      - name: storageUnitId
+        in: query
+        required: false
+        description: Filter items by storage unit ID.
+        schema:
+          type: string
+          format: uuid
+      - name: compartmentId
+        in: query
+        required: false
+        description: Filter items by compartment ID.
+        schema:
+          type: string
+          format: uuid
+      - name: quantity
+        in: query
+        required: false
+        description: Filter items by quantity.
+        schema:
+          type: number
+          format: float
+          nullable: true
+      - name: isExpired
+        in: query
+        required: false
+        description: Filter items by expiration status.
+        schema:
+          type: boolean
+      - name: sortBy
+        in: query
+        required: false
+        description: Sort items by a specific field.
+        schema:
+          type: string
+          enum: [purchaseDate, expirationDate, name, quantity, createdAt, UpdatedAt]
+      - name: sortOrder
+        in: query
+        required: false
+        description: Sort order for items.
+        schema:
+          type: string
+          enum: [asc, desc]
+          default: asc
+      - name: name
+        in: query
+        required: false
+        description: Filter items by name.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: List of items.
+        content:
+          'application/json':
+            schema:
+              type: array
+              items:
+                $ref: '../schema/Item.yaml#/ItemDto'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  post:
+    summary: Create a new Item
+    operationId: createItem
+    tags:
+      - item
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            $ref: '../schema/Item.yaml#/ItemDto'
+    responses:
+      '201':
+        description: Item created successfully.
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/Item.yaml#/ItemDto'
+      '400':
+        description: Invalid input
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+
+/v1/item/{itemId}:
+  parameters:
+    - name: itemId
+      in: path
+      required: true
+      description: The ID of the item to retrieve.
+      schema:
+        type: string
+        format: uuid
+  get:
+    summary: Get an item by ID
+    operationId: getItemById
+    tags:
+      - item
+    responses:
+      '200':
+        description: Item found.
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/Item.yaml#/ItemDto'
+      '404':
+        description: Item not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  patch:
+    summary: Partially update an item by ID
+    operationId: patchItem
+    tags:
+      - item
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schema/Item.yaml#/ItemPatchDto'
+    responses:
+      '200':
+        description: Item updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../schema/Item.yaml#/ItemDto'
+      '400':
+        description: Invalid input
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '404':
+        description: Item not found
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  delete:
+    summary: Delete an item by ID
+    operationId: deleteItemById
+    tags:
+      - item
+    responses:
+      '204':
+        description: Item deleted successfully.
+      '404':
+        description: Item not found
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'

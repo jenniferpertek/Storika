@@ -1,0 +1,40 @@
+CategoryDto:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Unique identifier for the category.
+      readOnly: true
+    name:
+      type: string
+      description: The name of the category (e.g., "Canned Goods").
+      example: Grains
+    description:
+      type: string
+      description: Optional description of the category.
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+      description: Timestamp when the category was created.
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      description: Timestamp when the category was last updated.
+      readOnly: true
+    required:
+      - name
+
+CategoryPatchDto:
+  type: object
+  description: Data for partially updating a Category.
+  properties:
+    name:
+      type: string
+      description: The new name of the category.
+    description:
+      type: string
+      nullable: true
+      description: The new description for the category.

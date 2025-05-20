@@ -1,0 +1,40 @@
+LocationDto:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Unique identifier for the location.
+      readOnly: true
+    name:
+      type: string
+      description: The name of the location (e.g., "Kitchen", "Living Room", "Bedroom").
+      example: Kitchen
+    description:
+      type: string
+      description: Optional description of the location.
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+      description: Timestamp when the location was created.
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      description: Timestamp when the location was last updated.
+      readOnly: true
+    required:
+      - name
+
+LocationPatchDto:
+  type: object
+  description: Data for partially updating a Location.
+  properties:
+    name:
+      type: string
+      description: The new name of the location.
+    description:
+      type: string
+      nullable: true
+      description: The new description for the location.

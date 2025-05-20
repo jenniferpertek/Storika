@@ -1,0 +1,161 @@
+/v1/compartments:
+  get:
+    summary: Get all compartments
+    operationId: getAllCompartments
+    tags:
+      - compartment
+    parameters:
+      - name: storageUnitId
+        in: query
+        required: false
+        description: Filter compartments by storage unit ID
+        schema:
+          type: string
+          format: uuid
+      - name: name
+        in: query
+        required: false
+        description: Filter compartments by name
+        schema:
+          type: string
+    responses:
+      '200':
+        description: List of compartments.
+        content:
+          'application/json':
+            schema:
+              type: array
+              items:
+                $ref: '../schema/Compartment.yaml#/CompartmentDto'
+      '404':
+        description: Compartments not found.
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  post:
+    summary: Create a new compartment
+    operationId: createCompartment
+    tags:
+      - compartment
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            $ref: '../schema/Compartment.yaml#/CreateCompartmentDto'
+    responses:
+      '201':
+        description: Compartment created successfully.
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/Compartment.yaml#/CompartmentDto'
+      '400':
+        description: Invalid input
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+
+/v1/compartment/{compartmentId}:
+  parameters:
+    - name: compartmentId
+      in: path
+      required: true
+      description: ID of the compartment to retrieve
+      schema:
+        type: string
+        format: uuid
+  get:
+    summary: Get a compartment by ID
+    operationId: getCompartmentById
+    tags:
+      - compartment
+    responses:
+      '200':
+        description: Compartment found.
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/Compartment.yaml#/CompartmentDto'
+      '404':
+        description: Compartment not found.
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  patch:
+    summary: Partially update a compartment by ID
+    operationId: patchCompartment
+    tags:
+      - compartment
+    requestBody:
+      required: true
+      content:
+        'application/json':
+          schema:
+            $ref: '../schema/Compartment.yaml#/CompartmentPatchDto'
+    responses:
+      '200':
+        description: Compartment updated successfully.
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/Compartment.yaml#/CompartmentDto'
+      '400':
+        description: Invalid input
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '404':
+        description: Compartment not found.
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  delete:
+    summary: Delete a compartment by ID
+    operationId: deleteCompartmentById
+    tags:
+      - compartment
+    responses:
+      '204':
+        description: Compartment deleted successfully.
+      '404':
+        description: Compartment not found.
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'

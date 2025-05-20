@@ -1,0 +1,50 @@
+StorageUnitDto:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Unique identifier for the storage unit.
+      readOnly: true
+    name:
+      type: string
+      description: The name of the storage unit (e.g., "Fridge", "Pantry Cupboard").
+      example: Pantry Cupboard
+    description:
+      type: string
+      description: Optional description of the storage unit.
+      nullable: true
+    locationId:
+      type: string
+      format: uuid
+      description: The ID of the location this storage unit belongs to.
+    createdAt:
+      type: string
+      format: date-time
+      description: Timestamp when the storage unit was created.
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      description: Timestamp when the storage unit was last updated.
+      readOnly: true
+    required:
+      - name
+      - locationId
+
+StorageUnitPatchDto:
+  type: object
+  description: Data for partially updating a Storage Unit.
+  properties:
+    name:
+      type: string
+      description: The new name of the storage unit.
+    description:
+      type: string
+      nullable: true
+      description: The new description for the storage unit.
+    locationId:
+      type: string
+      format: uuid
+      description: The new ID of the location this storage unit belongs to.
+      nullable: true

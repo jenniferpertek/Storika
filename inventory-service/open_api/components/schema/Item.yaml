@@ -1,0 +1,117 @@
+ItemDto:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Unique identifier for the item.
+      readOnly: true
+    name:
+      type: string
+      description: The name of the item (e.g., "Rice", "Canned Beans", etc).
+      example: Bag of rice
+    description:
+      type: string
+      description: Optional description of the item.
+      nullable: true
+    quantity:
+      type: number
+      format: float
+      description: The Quantity of the item.
+      example: 1.5
+      nullable: true
+    unit:
+      type: string
+      description: The unit of measurement of the quantity (e.g., "kg", "pcs").
+      nullable: true
+      example: kg
+    purchaseDate:
+      type: string
+      format: date
+      description: The date when the item was purchased.
+      nullable: true
+    expirationDate:
+      type: string
+      format: date
+      description: The date when the item expires.
+      nullable: true
+    notes:
+      type: string
+      description: Optional notes about the item.
+      nullable: true
+    categoryId:
+      type: string
+      format: uuid
+      description: The ID of the category to which the item belongs.
+      nullable: true
+    storageUnitId:
+      type: string
+      format: uuid
+      description: The ID of the storage unit where the item is stored.
+    compartmentId:
+      type: string
+      format: uuid
+      description: The ID of the compartment where the item is stored.
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+      description: Timestamp when the item was created.
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      description: Timestamp when the item was last updated.
+      readOnly: true
+    required:
+      - name
+      - storageUnitId
+
+ItemPatchDto:
+  type: object
+  description: Data for partially updating an Item.
+  properties:
+    name:
+      type: string
+      description: The new name of the item.
+    description:
+      type: string
+      nullable: true
+      description: The new description for the item.
+    quantity:
+      type: number
+      format: float
+      nullable: true
+      description: The new quantity of the item.
+    unit:
+      type: string
+      nullable: true
+      description: The new unit of measurement.
+    purchaseDate:
+      type: string
+      format: date
+      nullable: true
+      description: The new purchase date.
+    expiryDate:
+      type: string
+      format: date
+      nullable: true
+      description: The new expiry date.
+    notes:
+      type: string
+      nullable: true
+      description: New notes for the item.
+    categoryId:
+      type: string
+      format: uuid
+      nullable: true
+      description: The new category ID for the item.
+    storageUnitId:
+      type: string
+      format: uuid
+      description: The new storage unit ID for the item.
+    compartmentId:
+      type: string
+      format: uuid
+      nullable: true
+      description: The new compartment ID for the item.

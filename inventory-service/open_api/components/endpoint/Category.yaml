@@ -1,0 +1,154 @@
+/v1/categories:
+  get:
+    summary: Get all categories
+    operationId: getAllCategories
+    tags:
+      - category
+    parameters:
+      - name: name
+        in: query
+        required: false
+        description: Filter by category name
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A List of categories.
+        content:
+          'application/json':
+            schema:
+              type: array
+              items:
+                $ref: '../schema/Category.yaml#/CategoryDto'
+      '404':
+        description: Not Found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  post:
+    summary: Create a new category.
+    operationId: createCategory
+    tags:
+      - category
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schema/Category.yaml#/CategoryDto'
+    responses:
+      '201':
+        description: Category created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../schema/Category.yaml#/CategoryDto'
+      '400':
+        description: Invalid Input
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+
+/v1/category/{categoryId}:
+  parameters:
+    - name: categoryId
+      in: path
+      required: true
+      description: The ID of the category to retrieve.
+      schema:
+        type: string
+        format: uuid
+  get:
+    summary: Get a category by ID
+    operationId: getCategoryById
+    tags:
+      - category
+    responses:
+      '200':
+        description: Category found.
+        content:
+          'application/json':
+            schema:
+              $ref: '../schema/Category.yaml#/CategoryDto'
+      '404':
+        description: Category not found
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  patch:
+    summary: Partially update a category by ID
+    operationId: patchCategory
+    tags:
+      - category
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../schema/Category.yaml#/CategoryPatchDto'
+    responses:
+      '200':
+        description: Category updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../schema/Category.yaml#/CategoryDto'
+      '400':
+        description: Invalid Input
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '404':
+        description: Category not found
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+  delete:
+    summary: Delete a category by ID
+    operationId: deleteCategory
+    tags:
+      - category
+    responses:
+      '204':
+        description: Category deleted successfully.
+      '404':
+        description: Category not found
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '500':
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
