@@ -67,7 +67,7 @@ public class StorageUnit implements Serializable {
   private OffsetDateTime createdAt;
 
   @UpdateTimestamp
-  @Column(name = "updated_at", nullable = false)
+  @Column(name = "updated_at")
   private OffsetDateTime updatedAt;
 
   // Helper methods for Compartments

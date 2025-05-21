@@ -7,6 +7,7 @@ import at.pertek.storika.inventory_service.entities.Category;
 import at.pertek.storika.inventory_service.mappers.CategoryMapper;
 import at.pertek.storika.inventory_service.repositories.CategoryRepository;
 import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,10 @@ public class CategoryService {
   private final CategoryRepository categoryRepository;
   private final CategoryMapper categoryMapper;
 
+  @Transactional(readOnly = true)
   public List<CategoryDto> getAllCategories() {
+    log.debug("Fetching all categories");
+
     return categoryRepository
         .findAll()
         .stream()
@@ -28,39 +32,58 @@ public class CategoryService {
         .toList();
   }
 
-  public Category getCategoryEntityById(Long categoryId) {
+  @Transactional(readOnly = true)
+  public Category getCategoryEntityById(UUID categoryId) {
+    log.debug("Fetching category entity with id: {}", categoryId);
+
     return categoryRepository
         .findById(categoryId)
-        .orElseThrow(() -> new EntryNotFoundException(ErrorCode.INVALID_ID));
+        .orElseThrow(() -> {
+          log.warn("Category not found with id: {}", categoryId);
+          return new EntryNotFoundException(ErrorCode.INVALID_ID);
+        });
   }
 
   @Transactional
-  public CategoryDto getCategoryById(Long categoryId) {
-    return categoryMapper
-        .entityToDto(
-            getCategoryEntityById(categoryId)
-        );
+  public CategoryDto getCategoryById(UUID categoryId) {
+    log.debug("Fetching category DTO with id: {}", categoryId);
+
+    return categoryMapper.entityToDto(getCategoryEntityById(categoryId));
   }
 
+  @Transactional
   public CategoryDto createCategory(CategoryDto categoryDto) {
+    log.info("Creating new category with name: {}", categoryDto.getName());
+
     Category category = categoryMapper.dtoToEntity(categoryDto);
     Category savedCategory = categoryRepository.save(category);
+
+    log.info("Successfully created category with id: {}", savedCategory.getCategoryId());
 
     return categoryMapper.entityToDto(savedCategory);
   }
 
-  public CategoryDto updateCategory(long categoryId, CategoryDto categoryDto) {
+  @Transactional
+  public CategoryDto updateCategory(UUID categoryId, CategoryDto categoryDto) {
+    log.info("Updating category with id: {}", categoryId);
+
     Category existingCategory = getCategoryEntityById(categoryId);
-
     categoryMapper.updateCategoryFromDto(categoryDto, existingCategory);
-
     Category updatedCategory = categoryRepository.save(existingCategory);
+
+    log.info("Successfully updated category with id: {}", updatedCategory.getCategoryId());
+
     return categoryMapper.entityToDto(updatedCategory);
   }
 
-  public void deleteCategory(Long categoryId) {
+  @Transactional
+  public void deleteCategory(UUID categoryId) {
+    log.info("Deleting category with id: {}", categoryId);
+
     Category category = getCategoryEntityById(categoryId);
     categoryRepository.delete(category);
+
+    log.info("Successfully deleted category with id: {}", categoryId);
   }
-  
+
 }

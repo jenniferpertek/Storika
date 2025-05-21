@@ -53,7 +53,7 @@ public class Location implements Serializable {
   private OffsetDateTime createdAt;
 
   @UpdateTimestamp
-  @Column(name = "updated_at", nullable = false)
+  @Column(name = "updated_at")
   private OffsetDateTime updatedAt;
 
   @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)

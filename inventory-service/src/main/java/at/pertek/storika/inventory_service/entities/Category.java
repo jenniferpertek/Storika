@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -45,11 +46,11 @@ public class Category implements Serializable {
 
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, updatable = false)
-  private java.time.OffsetDateTime createdAt;
+  private OffsetDateTime createdAt;
 
   @UpdateTimestamp
   @Column(name = "updated_at")
-  private java.time.OffsetDateTime updatedAt;
+  private OffsetDateTime updatedAt;
 
   @Override
   public final boolean equals(Object o) {

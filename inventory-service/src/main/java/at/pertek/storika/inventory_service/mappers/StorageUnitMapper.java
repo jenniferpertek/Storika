@@ -1,7 +1,7 @@
 package at.pertek.storika.inventory_service.mappers;
 
-import at.pertek.storika.inventory_service.dto.CategoryDto;
-import at.pertek.storika.inventory_service.entities.Category;
+import at.pertek.storika.inventory_service.dto.StorageUnitDto;
+import at.pertek.storika.inventory_service.entities.StorageUnit;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Mapper(componentModel = "spring")
-public interface CategoryMapper {
+public interface StorageUnitMapper {
 
-  Category dtoToEntity(CategoryDto categoryDto);
+  StorageUnit dtoToEntity(StorageUnitDto storageUnitDto);
 
-  CategoryDto entityToDto(Category category);
+  StorageUnitDto entityToDto(StorageUnit storageUnit);
 
-  void updateCategoryFromDto(CategoryDto categoryDto, @MappingTarget Category category);
+  void updateStorageUnitFromDto(StorageUnitDto storageUnitDto, @MappingTarget StorageUnit storageUnit);
 
   // For JsonNullable<String> (description) <-> String (description)
   default String mapJsonNullableToString(JsonNullable<String> jsonNullableString) {
