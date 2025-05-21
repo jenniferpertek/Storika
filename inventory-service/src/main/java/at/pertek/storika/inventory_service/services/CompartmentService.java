@@ -2,9 +2,8 @@ package at.pertek.storika.inventory_service.services;
 
 import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundException;
 import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
-import at.pertek.storika.inventory_service.dto.CategoryDto;
 import at.pertek.storika.inventory_service.dto.CompartmentDto;
-import at.pertek.storika.inventory_service.entities.Category;
+import at.pertek.storika.inventory_service.dto.CompartmentPatchDto;
 import at.pertek.storika.inventory_service.entities.Compartment;
 import at.pertek.storika.inventory_service.entities.StorageUnit;
 import at.pertek.storika.inventory_service.mappers.CompartmentMapper;
@@ -13,8 +12,11 @@ import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -26,11 +28,17 @@ public class CompartmentService {
   private final StorageUnitService storageUnitService;
 
   @Transactional(readOnly = true)
-  public List<CompartmentDto> getAllCompartments() {
+  public List<CompartmentDto> getAllCompartments(UUID storageUnitId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
     log.debug("Fetching all compartments");
 
-    return compartmentRepository
-        .findAll()
+    Sort sort = Sort.unsorted();
+    if (StringUtils.hasText(sortBy)) {
+      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
+          Sort.Direction.DESC : Sort.Direction.ASC;
+      sort = Sort.by(direction, sortBy);
+    }
+
+    return compartmentRepository.findByOptionalFilters(storageUnitId, name, sort)
         .stream()
         .map(compartmentMapper::entityToDto)
         .toList();
@@ -77,20 +85,32 @@ public class CompartmentService {
   }
 
   @Transactional
-  public CompartmentDto updateCompartment(UUID compartmentId, CompartmentDto compartmentDto) {
+  public CompartmentDto patchCompartment(UUID compartmentId, CompartmentPatchDto compartmentPatchDto) {
     log.info("Updating compartment with id: {}", compartmentId);
 
     Compartment existingCompartment = getCompartmentEntityById(compartmentId);
 
-    if (compartmentDto.getStorageUnitId() != null &&
-        (existingCompartment.getStorageUnit() == null ||
-            !existingCompartment.getStorageUnit().getStorageUnitId().equals(compartmentDto.getStorageUnitId()))) {
-      log.debug("Updating storage unit for compartment id: {}", compartmentId);
-      StorageUnit newStorageUnit = storageUnitService.getStorageUnitEntityById(compartmentDto.getStorageUnitId());
-      existingCompartment.setStorageUnit(newStorageUnit);
+    JsonNullable<UUID> storageUnitIdFromPatch = compartmentPatchDto.getStorageUnitId();
+
+    if (storageUnitIdFromPatch != null && storageUnitIdFromPatch.isPresent()) {
+      UUID newActualStorageUnitId = storageUnitIdFromPatch.get();
+
+      if (newActualStorageUnitId != null) {
+        if (existingCompartment.getStorageUnit() == null ||
+            !newActualStorageUnitId.equals(existingCompartment.getStorageUnit().getStorageUnitId())) {
+          log.debug("Updating storage unit for compartment id: {} to new storageUnitId: {}", compartmentId, newActualStorageUnitId);
+          StorageUnit newStorageUnit = storageUnitService.getStorageUnitEntityById(newActualStorageUnitId);
+          existingCompartment.setStorageUnit(newStorageUnit);
+        }
+      } else {
+        if (existingCompartment.getStorageUnit() != null) {
+          log.debug("Disassociating storage unit for compartment id: {}", compartmentId);
+          existingCompartment.setStorageUnit(null);
+        }
+      }
     }
 
-    compartmentMapper.updateCompartmentFromDto(compartmentDto, existingCompartment);
+    compartmentMapper.patchCompartmentFromDto(compartmentPatchDto, existingCompartment);
 
     Compartment updatedCompartment = compartmentRepository.save(existingCompartment);
 

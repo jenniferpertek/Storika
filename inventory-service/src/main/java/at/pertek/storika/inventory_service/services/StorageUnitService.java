@@ -3,6 +3,7 @@ package at.pertek.storika.inventory_service.services;
 import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundException;
 import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.StorageUnitDto;
+import at.pertek.storika.inventory_service.dto.StorageUnitPatchDto;
 import at.pertek.storika.inventory_service.entities.Location;
 import at.pertek.storika.inventory_service.entities.StorageUnit;
 import at.pertek.storika.inventory_service.mappers.StorageUnitMapper;
@@ -11,8 +12,11 @@ import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -24,11 +28,18 @@ public class StorageUnitService {
   private final LocationService locationService;
 
   @Transactional(readOnly = true)
-  public List<StorageUnitDto> getAllStorageUnits() {
+  public List<StorageUnitDto> getAllStorageUnits(UUID locationId, String name,String sortBy, String sortOrder, Integer page, Integer size) {
     log.debug("Fetching all storage units");
 
+    Sort sort = Sort.unsorted();
+    if (StringUtils.hasText(sortBy)) {
+      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
+          Sort.Direction.DESC : Sort.Direction.ASC;
+      sort = Sort.by(direction, sortBy);
+    }
+
     return storageUnitRepository
-        .findAll()
+        .findByOptionalFilters(locationId, name, sort)
         .stream()
         .map(storageUnitMapper::entityToDto)
         .toList();
@@ -74,20 +85,32 @@ public class StorageUnitService {
   }
 
   @Transactional
-  public StorageUnitDto updateStorageUnit(UUID storageUnitId, StorageUnitDto storageUnitDto) {
+  public StorageUnitDto patchStorageUnit(UUID storageUnitId, StorageUnitPatchDto storageUnitPatchDto) {
     log.info("Updating storage unit with id: {}", storageUnitId);
 
     StorageUnit existingStorageUnit = getStorageUnitEntityById(storageUnitId);
 
-    if (storageUnitDto.getLocationId() != null
-        && (existingStorageUnit.getLocation() == null ||
-        !existingStorageUnit.getLocation().getLocationId().equals(storageUnitDto.getLocationId()))) {
-      log.debug("Updating location for storage unit id: {}", storageUnitId);
-      Location newLocation = locationService.getLocationEntityById(storageUnitDto.getLocationId());
-      existingStorageUnit.setLocation(newLocation);
+    JsonNullable<UUID> locationIdFromPatch = storageUnitPatchDto.getLocationId();
+
+    if (locationIdFromPatch != null && locationIdFromPatch.isPresent()) {
+      UUID newActualLocationId = locationIdFromPatch.get();
+
+      if (newActualLocationId != null) {
+         if (existingStorageUnit.getLocation() == null ||
+            !newActualLocationId.equals(existingStorageUnit.getLocation().getLocationId())) {
+          log.debug("Updating location for storage unit id: {} to new locationId: {}", storageUnitId, newActualLocationId);
+          Location newLocation = locationService.getLocationEntityById(newActualLocationId);
+          existingStorageUnit.setLocation(newLocation);
+        }
+      } else {
+        if (existingStorageUnit.getLocation() != null) {
+          log.debug("Disassociating location for storage unit id: {}", storageUnitId);
+          existingStorageUnit.setLocation(null);
+        }
+      }
     }
 
-    storageUnitMapper.updateStorageUnitFromDto(storageUnitDto, existingStorageUnit);
+    storageUnitMapper.patchStorageUnitFromDto(storageUnitPatchDto, existingStorageUnit);
 
     StorageUnit updatedStorageUnit = storageUnitRepository.save(existingStorageUnit);
 
@@ -112,7 +135,7 @@ public class StorageUnitService {
 
     locationService.getLocationEntityById(locationId);
 
-    return storageUnitRepository.findByLocationId(locationId)
+    return storageUnitRepository.findByOptionalFilters(locationId, null, null)
         .stream()
         .map(storageUnitMapper::entityToDto)
         .toList();

@@ -1,8 +1,7 @@
 package at.pertek.storika.inventory_service.mappers;
 
-import at.pertek.storika.inventory_service.dto.CategoryDto;
 import at.pertek.storika.inventory_service.dto.ItemDto;
-import at.pertek.storika.inventory_service.entities.Category;
+import at.pertek.storika.inventory_service.dto.ItemPatchDto;
 import at.pertek.storika.inventory_service.entities.Item;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -21,7 +20,7 @@ public interface ItemMapper {
 
   ItemDto entityToDto(Item item);
 
-  void updateItemFromDto(ItemDto itemDto, @MappingTarget Item item);
+  void patchItemFromDto(ItemPatchDto itemPatchDto, @MappingTarget Item item);
 
   // For JsonNullable<String> (description, notes, unit) <-> String (description, notes, unit)
   // Note: These methods will be used for description, notes, and unit fields automatically

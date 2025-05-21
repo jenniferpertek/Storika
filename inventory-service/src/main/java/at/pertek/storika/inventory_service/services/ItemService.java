@@ -3,6 +3,7 @@ package at.pertek.storika.inventory_service.services;
 import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundException;
 import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.ItemDto;
+import at.pertek.storika.inventory_service.dto.ItemPatchDto;
 import at.pertek.storika.inventory_service.entities.Category;
 import at.pertek.storika.inventory_service.entities.Compartment;
 import at.pertek.storika.inventory_service.entities.Item;
@@ -13,8 +14,13 @@ import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -28,14 +34,33 @@ public class ItemService {
   private final ItemMapper itemMapper;
 
   @Transactional(readOnly = true)
-  public List<ItemDto> getAllItems() {
-    log.debug("Fetching all items");
+  public Page<ItemDto> getAllItems( UUID categoryId, UUID storageUnitId, UUID compartmentId,
+                                    Float quantity, Boolean isExpired,
+                                    String sortBy, String sortOrder, String name,
+                                    Integer page, Integer size) {
+    log.debug("Fetching items with filters - categoryId: [{}], storageUnitId: [{}], compartmentId: [{}], " +
+            "quantity: [{}], isExpired: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+        categoryId, storageUnitId, compartmentId, quantity, isExpired, name, sortBy, sortOrder, page, size);
 
-    return itemRepository
-        .findAll()
-        .stream()
-        .map(itemMapper::entityToDto)
-        .toList();
+    Sort sort = Sort.unsorted();
+    if (StringUtils.hasText(sortBy)) {
+      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
+          Sort.Direction.DESC : Sort.Direction.ASC;
+      sort = Sort.by(direction, sortBy);
+    }
+
+    int pageNumber = (page != null && page >= 0) ? page : 0;
+    int pageSize = (size != null && size > 0) ? size : 10;
+
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+
+    Page<Item> itemPage = itemRepository.findByOptionalFilters(
+        categoryId, storageUnitId, compartmentId,
+        quantity, isExpired, name,
+        pageable
+    );
+
+    return itemPage.map(itemMapper::entityToDto);
   }
 
   @Transactional(readOnly = true)
@@ -93,21 +118,21 @@ public class ItemService {
   }
 
   @Transactional
-  public ItemDto updateItem(UUID itemId, ItemDto itemDto) {
+  public ItemDto patchItem(UUID itemId, ItemPatchDto itemPatchDto) {
     log.info("Updating item with id: {}", itemId);
 
     Item existingItem = getItemEntityById(itemId);
 
-    if (itemDto.getStorageUnitId() != null &&
+    if (itemPatchDto.getStorageUnitId() != null &&
         (existingItem.getStorageUnit() == null ||
-            !existingItem.getStorageUnit().getStorageUnitId().equals(itemDto.getStorageUnitId()))) {
+            !existingItem.getStorageUnit().getStorageUnitId().equals(itemPatchDto.getStorageUnitId()))) {
       log.debug("Updating storage unit for item id: {}", itemId);
-      StorageUnit newStorageUnit = storageUnitService.getStorageUnitEntityById(itemDto.getStorageUnitId());
+      StorageUnit newStorageUnit = storageUnitService.getStorageUnitEntityById(itemPatchDto.getStorageUnitId());
       existingItem.setStorageUnit(newStorageUnit);
     }
 
-    if (itemDto.getCategoryId() != null && itemDto.getCategoryId().isPresent()) {
-      UUID categoryUuid = itemDto.getCategoryId().orElse(null);
+    if (itemPatchDto.getCategoryId() != null && itemPatchDto.getCategoryId().isPresent()) {
+      UUID categoryUuid = itemPatchDto.getCategoryId().orElse(null);
       if (categoryUuid != null) {
         Category newCategory = categoryService.getCategoryEntityById(categoryUuid);
         existingItem.setCategory(newCategory);
@@ -116,8 +141,8 @@ public class ItemService {
       }
     }
 
-    if (itemDto.getCompartmentId() != null && itemDto.getCompartmentId().isPresent()) {
-      UUID compartmentUuid = itemDto.getCompartmentId().orElse(null);
+    if (itemPatchDto.getCompartmentId() != null && itemPatchDto.getCompartmentId().isPresent()) {
+      UUID compartmentUuid = itemPatchDto.getCompartmentId().orElse(null);
       if (compartmentUuid != null) {
         Compartment newCompartment = compartmentService.getCompartmentEntityById(compartmentUuid);
         existingItem.setCompartment(newCompartment);
@@ -126,7 +151,7 @@ public class ItemService {
       }
     }
 
-    itemMapper.updateItemFromDto(itemDto, existingItem);
+    itemMapper.patchItemFromDto(itemPatchDto, existingItem);
     Item updatedItem = itemRepository.save(existingItem);
 
     log.info("Successfully updated item with id: {}", updatedItem.getItemId());

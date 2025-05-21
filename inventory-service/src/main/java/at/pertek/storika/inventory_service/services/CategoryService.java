@@ -3,6 +3,7 @@ package at.pertek.storika.inventory_service.services;
 import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundException;
 import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.CategoryDto;
+import at.pertek.storika.inventory_service.dto.CategoryPatchDto;
 import at.pertek.storika.inventory_service.entities.Category;
 import at.pertek.storika.inventory_service.mappers.CategoryMapper;
 import at.pertek.storika.inventory_service.repositories.CategoryRepository;
@@ -10,8 +11,10 @@ import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -22,11 +25,17 @@ public class CategoryService {
   private final CategoryMapper categoryMapper;
 
   @Transactional(readOnly = true)
-  public List<CategoryDto> getAllCategories() {
+  public List<CategoryDto> getAllCategories(String name, String sortBy, String sortOrder, Integer page, Integer size) {
     log.debug("Fetching all categories");
 
-    return categoryRepository
-        .findAll()
+    Sort sort = Sort.unsorted();
+    if (StringUtils.hasText(sortBy)) {
+      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
+          Sort.Direction.DESC : Sort.Direction.ASC;
+      sort = Sort.by(direction, sortBy);
+    }
+
+    return categoryRepository.findByOptionalFilters(name, sort)
         .stream()
         .map(categoryMapper::entityToDto)
         .toList();
@@ -64,11 +73,11 @@ public class CategoryService {
   }
 
   @Transactional
-  public CategoryDto updateCategory(UUID categoryId, CategoryDto categoryDto) {
+  public CategoryDto patchCategory(UUID categoryId, CategoryPatchDto categoryPatchDto) {
     log.info("Updating category with id: {}", categoryId);
 
     Category existingCategory = getCategoryEntityById(categoryId);
-    categoryMapper.updateCategoryFromDto(categoryDto, existingCategory);
+    categoryMapper.patchCategoryFromDto(categoryPatchDto, existingCategory);
     Category updatedCategory = categoryRepository.save(existingCategory);
 
     log.info("Successfully updated category with id: {}", updatedCategory.getCategoryId());

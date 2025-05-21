@@ -1,6 +1,7 @@
 package at.pertek.storika.inventory_service.mappers;
 
 import at.pertek.storika.inventory_service.dto.StorageUnitDto;
+import at.pertek.storika.inventory_service.dto.StorageUnitPatchDto;
 import at.pertek.storika.inventory_service.entities.StorageUnit;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -18,7 +19,7 @@ public interface StorageUnitMapper {
 
   StorageUnitDto entityToDto(StorageUnit storageUnit);
 
-  void updateStorageUnitFromDto(StorageUnitDto storageUnitDto, @MappingTarget StorageUnit storageUnit);
+  void patchStorageUnitFromDto(StorageUnitPatchDto storageUnitPatchDto, @MappingTarget StorageUnit storageUnit);
 
   // For JsonNullable<String> (description) <-> String (description)
   default String mapJsonNullableToString(JsonNullable<String> jsonNullableString) {

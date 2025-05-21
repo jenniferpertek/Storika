@@ -1,8 +1,7 @@
 package at.pertek.storika.inventory_service.mappers;
 
-import at.pertek.storika.inventory_service.dto.CategoryDto;
 import at.pertek.storika.inventory_service.dto.LocationDto;
-import at.pertek.storika.inventory_service.entities.Category;
+import at.pertek.storika.inventory_service.dto.LocationPatchDto;
 import at.pertek.storika.inventory_service.entities.Location;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -20,7 +19,7 @@ public interface LocationMapper {
 
   LocationDto entityToDto(Location location);
 
-  void updateLocationFromDto(LocationDto locationDto, @MappingTarget Location location);
+  void patchLocationFromDto(LocationPatchDto locationPatchDto, @MappingTarget Location location);
 
   // For JsonNullable<String> (description) <-> String (description)
   default String mapJsonNullableToString(JsonNullable<String> jsonNullableString) {

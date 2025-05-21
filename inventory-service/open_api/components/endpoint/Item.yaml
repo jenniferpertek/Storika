@@ -61,6 +61,25 @@
         description: Filter items by name.
         schema:
           type: string
+      - name: page
+        in: query
+        required: false
+        description: Page number of the result set (0-indexed).
+        schema:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+      - name: size
+        in: query
+        required: false
+        description: Number of items to return per page.
+        schema:
+          type: integer
+          format: int32
+          default: 10
+          minimum: 1
+          maximum: 100
     responses:
       '200':
         description: List of items.
@@ -184,7 +203,7 @@
               $ref: '../common/ApiError.yaml#/ApiError'
   delete:
     summary: Delete an item by ID
-    operationId: deleteItemById
+    operationId: deleteItem
     tags:
       - item
     responses:

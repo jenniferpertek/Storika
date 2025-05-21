@@ -1,6 +1,7 @@
 package at.pertek.storika.inventory_service.mappers;
 
 import at.pertek.storika.inventory_service.dto.CategoryDto;
+import at.pertek.storika.inventory_service.dto.CategoryPatchDto;
 import at.pertek.storika.inventory_service.entities.Category;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -18,7 +19,7 @@ public interface CategoryMapper {
 
   CategoryDto entityToDto(Category category);
 
-  void updateCategoryFromDto(CategoryDto categoryDto, @MappingTarget Category category);
+  void patchCategoryFromDto(CategoryPatchDto categoryPatchDto, @MappingTarget Category category);
 
   // For JsonNullable<String> (description) <-> String (description)
   default String mapJsonNullableToString(JsonNullable<String> jsonNullableString) {

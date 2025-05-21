@@ -3,6 +3,7 @@ package at.pertek.storika.inventory_service.services;
 import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundException;
 import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.LocationDto;
+import at.pertek.storika.inventory_service.dto.LocationPatchDto;
 import at.pertek.storika.inventory_service.entities.Location;
 import at.pertek.storika.inventory_service.mappers.LocationMapper;
 import at.pertek.storika.inventory_service.repositories.LocationRepository;
@@ -10,8 +11,10 @@ import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -22,11 +25,17 @@ public class LocationService {
   private final LocationMapper locationMapper;
 
   @Transactional(readOnly = true)
-  public List<LocationDto> getAllLocations() {
+  public List<LocationDto> getAllLocations(String name, String sortBy, String sortOrder, Integer page, Integer size) {
     log.debug("Fetching all locations");
 
-    return locationRepository
-        .findAll()
+    Sort sort = Sort.unsorted();
+    if (StringUtils.hasText(sortBy)) {
+      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
+          Sort.Direction.DESC : Sort.Direction.ASC;
+      sort = Sort.by(direction, sortBy);
+    }
+
+    return locationRepository.findByOptionalFilters(name, sort)
         .stream()
         .map(locationMapper::entityToDto)
         .toList();
@@ -64,11 +73,11 @@ public class LocationService {
   }
 
   @Transactional
-  public LocationDto updateLocation(UUID locationId, LocationDto locationDto) {
+  public LocationDto patchLocation(UUID locationId, LocationPatchDto locationpatchDto) {
     log.info("Updating location with id: {}", locationId);
 
     Location existingLocation = getLocationEntityById(locationId);
-    locationMapper.updateLocationFromDto(locationDto, existingLocation);
+    locationMapper.patchLocationFromDto(locationpatchDto, existingLocation);
     Location updatedLocation = locationRepository.save(existingLocation);
 
     log.info("Successfully updated location with id: {}", updatedLocation.getLocationId());
