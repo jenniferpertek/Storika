@@ -20,12 +20,6 @@
               type: array
               items:
                 $ref: '../schema/Category.yaml#/CategoryDto'
-      '404':
-        description: Not Found
-        content:
-          'application/json':
-            schema:
-              $ref: '../common/ApiError.yaml#/ApiError'
       '500':
         description: Internal Server Error
         content:
@@ -142,6 +136,12 @@
         description: Category deleted successfully.
       '404':
         description: Category not found
+        content:
+          application/json:
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '409':
+        description: Conflict - Category cannot be deleted as it is currently associated with items.
         content:
           application/json:
             schema:

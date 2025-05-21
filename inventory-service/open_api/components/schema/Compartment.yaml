@@ -40,10 +40,9 @@ CompartmentPatchDto:
     name:
       type: string
       description: The new name of the compartment.
-      # Not in 'required' list
     description:
       type: string
-      nullable: true # Allows explicitly setting description to null
+      nullable: true
       description: The new description for the compartment.
     storageUnitId:
       type: string

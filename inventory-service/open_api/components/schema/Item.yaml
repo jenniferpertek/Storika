@@ -1,5 +1,6 @@
 ItemDto:
   type: object
+  description: Represents an inventory item with its details and location.
   properties:
     id:
       type: string
@@ -63,9 +64,9 @@ ItemDto:
       format: date-time
       description: Timestamp when the item was last updated.
       readOnly: true
-    required:
-      - name
-      - storageUnitId
+  required:
+    - name
+    - storageUnitId
 
 ItemPatchDto:
   type: object
@@ -92,7 +93,7 @@ ItemPatchDto:
       format: date
       nullable: true
       description: The new purchase date.
-    expiryDate:
+    expirationDate:
       type: string
       format: date
       nullable: true

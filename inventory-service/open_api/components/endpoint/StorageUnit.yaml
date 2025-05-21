@@ -27,12 +27,6 @@
               type: array
               items:
                 $ref: '../schema/StorageUnit.yaml#/StorageUnitDto'
-      '404':
-        description: Storage unit not found
-        content:
-          'application/json':
-            schema:
-              $ref: '../common/ApiError.yaml#/ApiError'
       '500':
         description: Internal Server Error
         content:

@@ -1,5 +1,6 @@
 CategoryDto:
   type: object
+  description: Represents a category for organizing items.
   properties:
     id:
       type: string
@@ -24,8 +25,8 @@ CategoryDto:
       format: date-time
       description: Timestamp when the category was last updated.
       readOnly: true
-    required:
-      - name
+  required:
+    - name
 
 CategoryPatchDto:
   type: object

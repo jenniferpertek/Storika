@@ -20,12 +20,6 @@
               type: array
               items:
                 $ref: '../schema/Location.yaml#/LocationDto'
-      '404':
-        description: Location not found
-        content:
-          'application/json':
-            schema:
-              $ref: '../common/ApiError.yaml#/ApiError'
       '500':
         description: Internal Server Error
         content:
@@ -43,7 +37,7 @@
         'application/json':
           schema:
             $ref: '../schema/Location.yaml#/LocationDto'
-    response:
+    responses:
       '201':
         description: Location created successfully.
         content:

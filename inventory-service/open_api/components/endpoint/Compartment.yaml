@@ -27,12 +27,6 @@
               type: array
               items:
                 $ref: '../schema/Compartment.yaml#/CompartmentDto'
-      '404':
-        description: Compartments not found.
-        content:
-          'application/json':
-            schema:
-              $ref: '../common/ApiError.yaml#/ApiError'
       '500':
         description: Internal Server Error
         content:
@@ -49,7 +43,7 @@
       content:
         'application/json':
           schema:
-            $ref: '../schema/Compartment.yaml#/CreateCompartmentDto'
+            $ref: '../schema/Compartment.yaml#/CompartmentDto'
     responses:
       '201':
         description: Compartment created successfully.
@@ -151,6 +145,12 @@
         description: Compartment not found.
         content:
           'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
+      '409':
+        description: Conflict - Compartment cannot be deleted as it currently contains items.
+        content:
+          application/json:
             schema:
               $ref: '../common/ApiError.yaml#/ApiError'
       '500':

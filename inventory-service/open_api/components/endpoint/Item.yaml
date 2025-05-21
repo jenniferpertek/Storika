@@ -70,6 +70,12 @@
               type: array
               items:
                 $ref: '../schema/Item.yaml#/ItemDto'
+      '400':
+        description: Invalid query parameters
+        content:
+          'application/json':
+            schema:
+              $ref: '../common/ApiError.yaml#/ApiError'
       '500':
         description: Internal Server Error
         content:

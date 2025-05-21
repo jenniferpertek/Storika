@@ -1,5 +1,6 @@
 StorageUnitDto:
   type: object
+  description: Represents a storage unit within a location.
   properties:
     id:
       type: string
@@ -28,9 +29,9 @@ StorageUnitDto:
       format: date-time
       description: Timestamp when the storage unit was last updated.
       readOnly: true
-    required:
-      - name
-      - locationId
+  required:
+    - name
+    - locationId
 
 StorageUnitPatchDto:
   type: object

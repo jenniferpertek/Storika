@@ -1,5 +1,6 @@
 LocationDto:
   type: object
+  description: Represents a physical or logical location where items can be stored (e.g., "Kitchen", "Garage").
   properties:
     id:
       type: string
@@ -24,8 +25,8 @@ LocationDto:
       format: date-time
       description: Timestamp when the location was last updated.
       readOnly: true
-    required:
-      - name
+  required:
+    - name
 
 LocationPatchDto:
   type: object

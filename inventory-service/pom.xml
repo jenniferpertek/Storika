@@ -427,7 +427,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/open_api/openapi.yaml</inputSpec>
+							<inputSpec>${project.basedir}/open_api/components/openapi.yaml</inputSpec>
 							<generatorName>spring</generatorName>
 							<typeMappings>
 								<typeMapping>OffsetDateTime=Instant</typeMapping>

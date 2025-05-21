@@ -1,5 +1,6 @@
 package at.pertek.storika.inventory_service.endpoints;
 
+/*
 import at.pertek.storika.inventory_service.dto.CategoryDto;
 import at.pertek.storika.inventory_service.endpoint.CategoryApi;
 import at.pertek.storika.inventory_service.services.CategoryService;
@@ -49,4 +50,4 @@ public class CategoryEndpoint implements CategoryApi {
     return ResponseEntity.noContent().build();
   }
 
-}
+}*/
