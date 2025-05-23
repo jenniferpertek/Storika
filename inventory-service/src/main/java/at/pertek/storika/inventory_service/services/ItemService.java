@@ -11,6 +11,7 @@ import at.pertek.storika.inventory_service.entities.StorageUnit;
 import at.pertek.storika.inventory_service.mappers.ItemMapper;
 import at.pertek.storika.inventory_service.repositories.ItemRepository;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,11 @@ public class ItemService {
   private final StorageUnitService storageUnitService;
   private final ItemMapper itemMapper;
 
+  private static final String DEFAULT_ITEM_SORT_FIELD = "name";
+  private static final Set<String> ALLOWED_ITEM_SORT_FIELDS = Set.of(
+      DEFAULT_ITEM_SORT_FIELD, "quantity", "expirationDate", "createAt", "updateAt"
+  );
+
   @Transactional(readOnly = true)
   public Page<ItemDto> getAllItems( UUID categoryId, UUID storageUnitId, UUID compartmentId,
                                     Float quantity, Boolean isExpired,
@@ -42,17 +48,15 @@ public class ItemService {
             "quantity: [{}], isExpired: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
         categoryId, storageUnitId, compartmentId, quantity, isExpired, name, sortBy, sortOrder, page, size);
 
-    Sort sort = Sort.unsorted();
-    if (StringUtils.hasText(sortBy)) {
-      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
-          Sort.Direction.DESC : Sort.Direction.ASC;
-      sort = Sort.by(direction, sortBy);
-    }
+    Pageable pageable = PaginationUtil.createPageable(
+        page, size,
+        sortBy,
+        sortOrder,
+        DEFAULT_ITEM_SORT_FIELD,
+        ALLOWED_ITEM_SORT_FIELDS
+    );
 
-    int pageNumber = (page != null && page >= 0) ? page : 0;
-    int pageSize = (size != null && size > 0) ? size : 10;
-
-    Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+    log.debug("Constructed Pageable: {}", pageable);
 
     Page<Item> itemPage = itemRepository.findByOptionalFilters(
         categoryId, storageUnitId, compartmentId,

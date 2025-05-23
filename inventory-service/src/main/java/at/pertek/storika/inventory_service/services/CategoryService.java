@@ -5,16 +5,17 @@ import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.CategoryDto;
 import at.pertek.storika.inventory_service.dto.CategoryPatchDto;
 import at.pertek.storika.inventory_service.entities.Category;
+import at.pertek.storika.inventory_service.entities.Item;
 import at.pertek.storika.inventory_service.mappers.CategoryMapper;
 import at.pertek.storika.inventory_service.repositories.CategoryRepository;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -24,21 +25,32 @@ public class CategoryService {
   private final CategoryRepository categoryRepository;
   private final CategoryMapper categoryMapper;
 
+  private static final String DEFAULT_CATEGORY_SORT_FIELD = "name";
+  private static final Set<String> ALLOWED_CATEGORY_SORT_FIELDS = Set.of(
+      DEFAULT_CATEGORY_SORT_FIELD
+  );
+
   @Transactional(readOnly = true)
-  public List<CategoryDto> getAllCategories(String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.debug("Fetching all categories");
+  public Page<CategoryDto> getAllCategories(String name, String sortBy, String sortOrder, Integer page, Integer size) {
+    log.debug("Fetching categories with filters - name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+        name, sortBy, sortOrder, page, size);
 
-    Sort sort = Sort.unsorted();
-    if (StringUtils.hasText(sortBy)) {
-      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
-          Sort.Direction.DESC : Sort.Direction.ASC;
-      sort = Sort.by(direction, sortBy);
-    }
+    Pageable pageable = PaginationUtil.createPageable(
+        page,
+        size,
+        sortBy,
+        sortOrder,
+        DEFAULT_CATEGORY_SORT_FIELD,
+        ALLOWED_CATEGORY_SORT_FIELDS
+    );
 
-    return categoryRepository.findByOptionalFilters(name, sort)
-        .stream()
-        .map(categoryMapper::entityToDto)
-        .toList();
+    log.debug("Constructed Pageable: {}", pageable);
+
+    Page<Category> categoryPage = categoryRepository.findByOptionalFilters(
+        name, pageable
+    );
+
+    return categoryPage.map(categoryMapper::entityToDto);
   }
 
   @Transactional(readOnly = true)

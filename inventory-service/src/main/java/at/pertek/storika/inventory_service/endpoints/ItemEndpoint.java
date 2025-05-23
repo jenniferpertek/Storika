@@ -71,22 +71,20 @@ public class ItemEndpoint implements ItemApi {
     log.info("getAllItems request received with parameters - categoryId: [{}], storageUnitId: [{}], compartmentId: [{}], quantity: [{}], isExpired: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
         categoryId, storageUnitId, compartmentId, quantity, isExpired, name, sortBy, sortOrder, page, size);
 
-    Page<ItemDto> itemPage = itemService.getAllItems(categoryId, storageUnitId, compartmentId, quantity, isExpired, sortBy, sortOrder, name, page, size);
+    Page<ItemDto> itemsPage = itemService.getAllItems(categoryId, storageUnitId, compartmentId, quantity, isExpired, sortBy, sortOrder, name, page, size);
 
-    List<ItemDto> itemsOnPage = itemPage.getContent();
+    List<ItemDto> itemsOnPage = itemsPage.getContent();
 
     HttpHeaders responseHeaders = new HttpHeaders();
-    responseHeaders.add("X-Total-Count", String.valueOf(itemPage.getTotalElements())); // Total items across all pages
-    responseHeaders.add("X-Total-Pages", String.valueOf(itemPage.getTotalPages()));   // Total number of pages
-    responseHeaders.add("X-Current-Page", String.valueOf(itemPage.getNumber()));      // Current page number (0-indexed)
-    responseHeaders.add("X-Page-Size", String.valueOf(itemPage.getSize()));
+    responseHeaders.add("X-Total-Count", String.valueOf(itemsPage.getTotalElements()));
+    responseHeaders.add("X-Total-Pages", String.valueOf(itemsPage.getTotalPages()));
+    responseHeaders.add("X-Current-Page", String.valueOf(itemsPage.getNumber()));
+    responseHeaders.add("X-Page-Size", String.valueOf(itemsPage.getSize()));
 
     log.debug("Returning {} items for page {} (size {}). Total items: {}, Total pages: {}",
-        itemsOnPage.size(), itemPage.getNumber(), itemPage.getSize(), itemPage.getTotalElements(), itemPage.getTotalPages());
+        itemsOnPage.size(), itemsPage.getNumber(), itemsPage.getSize(), itemsPage.getTotalElements(), itemsPage.getTotalPages());
 
-    return ResponseEntity.ok()
-        .headers(responseHeaders)
-        .body(itemsOnPage);
+    return ResponseEntity.ok().headers(responseHeaders).body(itemsOnPage);
 
   }
 

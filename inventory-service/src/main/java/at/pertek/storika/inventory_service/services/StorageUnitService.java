@@ -4,19 +4,21 @@ import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundExcept
 import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.StorageUnitDto;
 import at.pertek.storika.inventory_service.dto.StorageUnitPatchDto;
+import at.pertek.storika.inventory_service.entities.Compartment;
 import at.pertek.storika.inventory_service.entities.Location;
 import at.pertek.storika.inventory_service.entities.StorageUnit;
 import at.pertek.storika.inventory_service.mappers.StorageUnitMapper;
 import at.pertek.storika.inventory_service.repositories.StorageUnitRepository;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.jackson.nullable.JsonNullable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -27,22 +29,30 @@ public class StorageUnitService {
   private final StorageUnitMapper storageUnitMapper;
   private final LocationService locationService;
 
+  private static final String DEFAULT_STORAGE_UNIT_SORT_FIELD = "name";
+  private static final Set<String> ALLOWED_STORAGE_UNIT_SORT_FIELDS = Set.of(
+      DEFAULT_STORAGE_UNIT_SORT_FIELD, "locationId"
+  );
+
   @Transactional(readOnly = true)
-  public List<StorageUnitDto> getAllStorageUnits(UUID locationId, String name,String sortBy, String sortOrder, Integer page, Integer size) {
-    log.debug("Fetching all storage units");
+  public Page<StorageUnitDto> getAllStorageUnits(UUID locationId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
+    log.debug("Fetching storageUnits with filters - locationId: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+        locationId, name, sortBy, sortOrder, page, size);
 
-    Sort sort = Sort.unsorted();
-    if (StringUtils.hasText(sortBy)) {
-      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
-          Sort.Direction.DESC : Sort.Direction.ASC;
-      sort = Sort.by(direction, sortBy);
-    }
+    Pageable pageable = PaginationUtil.createPageable(
+        page,
+        size,
+        sortBy,
+        sortOrder,
+        DEFAULT_STORAGE_UNIT_SORT_FIELD,
+        ALLOWED_STORAGE_UNIT_SORT_FIELDS
+    );
 
-    return storageUnitRepository
-        .findByOptionalFilters(locationId, name, sort)
-        .stream()
-        .map(storageUnitMapper::entityToDto)
-        .toList();
+    log.debug("Constructed Pageable: {}", pageable);
+
+    Page<StorageUnit> storageUnitsPage = storageUnitRepository.findByOptionalFilters(locationId, name, pageable);
+
+    return storageUnitsPage.map(storageUnitMapper::entityToDto);
   }
 
   @Transactional(readOnly = true)

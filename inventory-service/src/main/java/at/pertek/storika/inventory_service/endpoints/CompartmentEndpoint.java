@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,8 +64,23 @@ public class CompartmentEndpoint implements CompartmentApi {
    */
   @Override
   public ResponseEntity<List<CompartmentDto>> getAllCompartments(UUID storageUnitId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.info("getAllCompartments request arrived.");
-    return ResponseEntity.ok(compartmentService.getAllCompartments(storageUnitId, name, sortBy, sortOrder, page, size));
+    log.info("getAllCompartments request received with parameters - storageUnitId: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+        storageUnitId, name, sortBy, sortOrder, page, size);
+
+    Page<CompartmentDto> compartmentsPage = compartmentService.getAllCompartments(storageUnitId, name, sortBy, sortOrder, page, size);
+
+    List<CompartmentDto> compartmentsOnPage = compartmentsPage.getContent();
+
+    HttpHeaders responseHeaders = new HttpHeaders();
+    responseHeaders.add("X-Total-Count", String.valueOf(compartmentsPage.getTotalElements()));
+    responseHeaders.add("X-Total-Pages", String.valueOf(compartmentsPage.getTotalPages()));
+    responseHeaders.add("X-Current-Page", String.valueOf(compartmentsPage.getNumber()));
+    responseHeaders.add("X-Page-Size", String.valueOf(compartmentsPage.getSize()));
+
+    log.debug("Returning {} compartments for page {} (size {}). Total items: {}, Total pages: {}",
+        compartmentsOnPage.size(), compartmentsPage.getNumber(), compartmentsPage.getSize(), compartmentsPage.getTotalElements(), compartmentsPage.getTotalPages());
+
+    return ResponseEntity.ok().headers(responseHeaders).body(compartmentsOnPage);
   }
 
   /**

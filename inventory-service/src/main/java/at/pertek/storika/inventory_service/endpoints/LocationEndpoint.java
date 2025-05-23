@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,8 +64,24 @@ public class LocationEndpoint implements LocationApi {
    */
   @Override
   public ResponseEntity<List<LocationDto>> getAllLocations(String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.info("getAllLocations request arrived.");
-    return ResponseEntity.ok(locationService.getAllLocations(name, sortBy, sortOrder, page, size));
+    log.info("getAllLocations request received with parameters - name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+        name, sortBy, sortOrder, page, size);
+
+    Page<LocationDto> locationsPage = locationService.getAllLocations(name, sortBy, sortOrder, page, size);
+
+    List<LocationDto> locationsOnPage = locationsPage.getContent();
+
+    HttpHeaders responseHeaders = new HttpHeaders();
+    responseHeaders.add("X-Total-Count", String.valueOf(locationsPage.getTotalElements()));
+    responseHeaders.add("X-Total-Pages", String.valueOf(locationsPage.getTotalPages()));
+    responseHeaders.add("X-Current-Page", String.valueOf(locationsPage.getNumber()));
+    responseHeaders.add("X-Page-Size", String.valueOf(locationsPage.getSize()));
+
+    log.debug("Returning {} locations for page {} (size {}). Total items: {}, Total pages: {}",
+        locationsOnPage.size(), locationsPage.getNumber(), locationsPage.getSize(), locationsPage.getTotalElements(),
+        locationsPage.getTotalPages());
+
+    return ResponseEntity.ok().headers(responseHeaders).body(locationsOnPage);
   }
 
   /**

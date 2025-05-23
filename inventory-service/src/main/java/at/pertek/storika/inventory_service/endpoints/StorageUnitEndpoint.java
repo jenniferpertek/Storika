@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,8 +64,23 @@ public class StorageUnitEndpoint implements StorageUnitApi {
    */
   @Override
   public ResponseEntity<List<StorageUnitDto>> getAllStorageUnits(UUID locationId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.info("getAllStorageUnits request arrived.");
-    return ResponseEntity.ok(storageUnitService.getAllStorageUnits(locationId, name, sortBy, sortOrder, page, size));
+    log.info("getAllStorageUnits request received with parameters - locationId: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+        locationId, name, sortBy, sortOrder, page, size);
+
+    Page<StorageUnitDto> storageUnitsPage = storageUnitService.getAllStorageUnits(locationId, name, sortBy, sortOrder, page, size);
+
+    List<StorageUnitDto> storageUnitsOnPage = storageUnitsPage.getContent();
+
+    HttpHeaders responseHeaders = new HttpHeaders();
+    responseHeaders.add("X-Total-Count", String.valueOf(storageUnitsPage.getTotalElements()));
+    responseHeaders.add("X-Total-Pages", String.valueOf(storageUnitsPage.getTotalPages()));
+    responseHeaders.add("X-Current-Page", String.valueOf(storageUnitsPage.getNumber()));
+    responseHeaders.add("X-Page-Size", String.valueOf(storageUnitsPage.getSize()));
+
+    log.debug("Returning {} storageUnits for page {} (size {}). Total items: {}, Total pages: {}",
+        storageUnitsOnPage.size(), storageUnitsPage.getNumber(), storageUnitsPage.getSize(), storageUnitsPage.getTotalElements(), storageUnitsPage.getTotalPages());
+
+    return ResponseEntity.ok().headers(responseHeaders).body(storageUnitsOnPage);
   }
 
   /**

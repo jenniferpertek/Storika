@@ -4,13 +4,17 @@ import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundExcept
 import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.LocationDto;
 import at.pertek.storika.inventory_service.dto.LocationPatchDto;
+import at.pertek.storika.inventory_service.entities.Category;
 import at.pertek.storika.inventory_service.entities.Location;
 import at.pertek.storika.inventory_service.mappers.LocationMapper;
 import at.pertek.storika.inventory_service.repositories.LocationRepository;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,21 +28,33 @@ public class LocationService {
   private final LocationRepository locationRepository;
   private final LocationMapper locationMapper;
 
+  private static final String DEFAULT_LOCATION_SORT_FIELD = "name";
+  private static final Set<String> ALLOWED_LOCATION_SORT_FIELDS = Set.of(
+      DEFAULT_LOCATION_SORT_FIELD
+  );
+
+
   @Transactional(readOnly = true)
-  public List<LocationDto> getAllLocations(String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.debug("Fetching all locations");
+  public Page<LocationDto> getAllLocations(String name, String sortBy, String sortOrder, Integer page, Integer size) {
+    log.debug("Fetching locations with filters - name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+        name, sortBy, sortOrder, page, size);
 
-    Sort sort = Sort.unsorted();
-    if (StringUtils.hasText(sortBy)) {
-      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
-          Sort.Direction.DESC : Sort.Direction.ASC;
-      sort = Sort.by(direction, sortBy);
-    }
+    Pageable pageable = PaginationUtil.createPageable(
+        page,
+        size,
+        sortBy,
+        sortOrder,
+        DEFAULT_LOCATION_SORT_FIELD,
+        ALLOWED_LOCATION_SORT_FIELDS
+    );
 
-    return locationRepository.findByOptionalFilters(name, sort)
-        .stream()
-        .map(locationMapper::entityToDto)
-        .toList();
+    log.debug("Constructed Pageable: {}", pageable);
+
+    Page<Location> locationPage = locationRepository.findByOptionalFilters(
+        name, pageable
+    );
+
+    return locationPage.map(locationMapper::entityToDto);
   }
 
   @Transactional(readOnly = true)

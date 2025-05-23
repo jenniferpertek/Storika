@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,8 +64,23 @@ public class CategoryEndpoint implements CategoryApi {
    */
   @Override
   public ResponseEntity<List<CategoryDto>> getAllCategories(String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.info("getAllCategories request arrived.");
-    return ResponseEntity.ok(categoryService.getAllCategories(name, sortBy, sortOrder, page, size));
+    log.info("getAllCategories request received with parameters - name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+        name, sortBy, sortOrder, page, size);
+
+    Page<CategoryDto> categoriesPage = categoryService.getAllCategories(sortBy, sortOrder, name, page, size);
+
+    List<CategoryDto> categoriesOnPage = categoriesPage.getContent();
+
+    HttpHeaders responseHeaders = new HttpHeaders();
+    responseHeaders.add("X-Total-Count", String.valueOf(categoriesPage.getTotalElements()));
+    responseHeaders.add("X-Total-Pages", String.valueOf(categoriesPage.getTotalPages()));
+    responseHeaders.add("X-Current-Page", String.valueOf(categoriesPage.getNumber()));
+    responseHeaders.add("X-Page-Size", String.valueOf(categoriesPage.getSize()));
+
+    log.debug("Returning {} categories for page {} (size {}). Total items: {}, Total pages: {}",
+        categoriesOnPage.size(), categoriesPage.getNumber(), categoriesPage.getSize(), categoriesPage.getTotalElements(), categoriesPage.getTotalPages());
+
+    return ResponseEntity.ok().headers(responseHeaders).body(categoriesOnPage);
   }
 
   /**

@@ -3,6 +3,8 @@ package at.pertek.storika.inventory_service.repositories;
 import at.pertek.storika.inventory_service.entities.Location;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -17,11 +19,11 @@ public interface LocationRepository extends JpaRepository<Location, UUID>, JpaSp
   * The name search is case-insensitive and allows partial matches.
   *
   * @param name Optional name (or part of it) of the location to filter by.
-  * @param sort The sorting parameters to apply.
+  * @param pageable  {@link Pageable} object containing pagination (page number, page size) and sorting information.
   * @return A list of matching locations, sorted as specified.
   */
  @Query("SELECT l FROM Location l WHERE " +
      "(:name IS NULL OR :name = '' OR lower(l.name) LIKE lower(concat('%', :name, '%')))")
- List<Location> findByOptionalFilters(@Param("name") String name, Sort sort);
+ Page<Location> findByOptionalFilters(@Param("name") String name, Pageable pageable);
 
 }

@@ -9,14 +9,15 @@ import at.pertek.storika.inventory_service.entities.StorageUnit;
 import at.pertek.storika.inventory_service.mappers.CompartmentMapper;
 import at.pertek.storika.inventory_service.repositories.CompartmentRepository;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.jackson.nullable.JsonNullable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -27,21 +28,32 @@ public class CompartmentService {
   private final CompartmentMapper compartmentMapper;
   private final StorageUnitService storageUnitService;
 
+  private static final String DEFAULT_COMPARTMENT_SORT_FIELD = "name";
+  private static final Set<String> ALLOWED_COMPARTMENT_SORT_FIELDS = Set.of(
+      DEFAULT_COMPARTMENT_SORT_FIELD, "storageUnitId"
+  );
+
   @Transactional(readOnly = true)
-  public List<CompartmentDto> getAllCompartments(UUID storageUnitId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.debug("Fetching all compartments");
+  public Page<CompartmentDto> getAllCompartments(UUID storageUnitId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
+    log.debug("Fetching compartments with filters - storageUnitId: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+        storageUnitId, name, sortBy, sortOrder, page, size);
 
-    Sort sort = Sort.unsorted();
-    if (StringUtils.hasText(sortBy)) {
-      Sort.Direction direction = StringUtils.hasText(sortOrder) && "desc".equalsIgnoreCase(sortOrder) ?
-          Sort.Direction.DESC : Sort.Direction.ASC;
-      sort = Sort.by(direction, sortBy);
-    }
+    Pageable pageable = PaginationUtil.createPageable(
+        page,
+        size,
+        sortBy,
+        sortOrder,
+        DEFAULT_COMPARTMENT_SORT_FIELD,
+        ALLOWED_COMPARTMENT_SORT_FIELDS
+    );
 
-    return compartmentRepository.findByOptionalFilters(storageUnitId, name, sort)
-        .stream()
-        .map(compartmentMapper::entityToDto)
-        .toList();
+    log.debug("Constructed Pageable: {}", pageable);
+
+    Page<Compartment> compartmentPage = compartmentRepository.findByOptionalFilters(
+        storageUnitId, name, pageable
+    );
+
+    return compartmentPage.map(compartmentMapper::entityToDto);
   }
 
   @Transactional(readOnly = true)
