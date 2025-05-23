@@ -4,21 +4,17 @@ import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundExcept
 import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.LocationDto;
 import at.pertek.storika.inventory_service.dto.LocationPatchDto;
-import at.pertek.storika.inventory_service.entities.Category;
 import at.pertek.storika.inventory_service.entities.Location;
 import at.pertek.storika.inventory_service.mappers.LocationMapper;
 import at.pertek.storika.inventory_service.repositories.LocationRepository;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor

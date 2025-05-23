@@ -57,19 +57,16 @@ public class Category implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Category that)) {
-      return false;
-    }
-    if (this.categoryId == null || that.getCategoryId() == null) {
+    if (!(o instanceof Category other)) {
       return false;
     }
 
-    return Objects.equals(this.categoryId, that.getCategoryId());
+    return this.categoryId != null && this.categoryId.equals(other.categoryId);
   }
 
   @Override
   public final int hashCode() {
-    return Objects.hash(this.categoryId);
+    return Objects.hash(categoryId);
   }
 
 }

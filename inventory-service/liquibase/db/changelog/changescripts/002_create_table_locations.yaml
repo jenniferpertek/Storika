@@ -19,6 +19,11 @@ databaseChangeLog:
                     unique: true
                     nullable: false
               - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
                   name: created_at
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP

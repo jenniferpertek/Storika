@@ -4,7 +4,6 @@ import at.pertek.storika.inventory_service.commons.exception.EntryNotFoundExcept
 import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.StorageUnitDto;
 import at.pertek.storika.inventory_service.dto.StorageUnitPatchDto;
-import at.pertek.storika.inventory_service.entities.Compartment;
 import at.pertek.storika.inventory_service.entities.Location;
 import at.pertek.storika.inventory_service.entities.StorageUnit;
 import at.pertek.storika.inventory_service.mappers.StorageUnitMapper;

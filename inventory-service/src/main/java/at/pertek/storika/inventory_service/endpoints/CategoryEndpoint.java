@@ -67,7 +67,7 @@ public class CategoryEndpoint implements CategoryApi {
     log.info("getAllCategories request received with parameters - name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
         name, sortBy, sortOrder, page, size);
 
-    Page<CategoryDto> categoriesPage = categoryService.getAllCategories(sortBy, sortOrder, name, page, size);
+    Page<CategoryDto> categoriesPage = categoryService.getAllCategories(name, sortBy, sortOrder, page, size);
 
     List<CategoryDto> categoriesOnPage = categoriesPage.getContent();
 

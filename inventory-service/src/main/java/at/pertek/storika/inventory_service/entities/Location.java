@@ -75,18 +75,16 @@ public class Location implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Location that)) {
+    if (!(o instanceof Location other)) {
       return false;
     }
-    if (this.locationId == null || that.getLocationId() == null) {
-      return false;
-    }
-    return Objects.equals(this.locationId, that.getLocationId());
+
+    return this.locationId != null && this.locationId.equals(other.locationId);
   }
 
   @Override
   public final int hashCode() {
-    return Objects.hash(this.locationId);
+    return Objects.hash(locationId);
   }
 
 }

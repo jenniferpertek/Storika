@@ -5,7 +5,6 @@ import at.pertek.storika.inventory_service.commons.exception.ErrorCode;
 import at.pertek.storika.inventory_service.dto.CategoryDto;
 import at.pertek.storika.inventory_service.dto.CategoryPatchDto;
 import at.pertek.storika.inventory_service.entities.Category;
-import at.pertek.storika.inventory_service.entities.Item;
 import at.pertek.storika.inventory_service.mappers.CategoryMapper;
 import at.pertek.storika.inventory_service.repositories.CategoryRepository;
 import java.util.Set;
@@ -46,9 +45,7 @@ public class CategoryService {
 
     log.debug("Constructed Pageable: {}", pageable);
 
-    Page<Category> categoryPage = categoryRepository.findByOptionalFilters(
-        name, pageable
-    );
+    Page<Category> categoryPage = categoryRepository.findByOptionalFilters(name, pageable);
 
     return categoryPage.map(categoryMapper::entityToDto);
   }

@@ -38,6 +38,11 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
                   name: notes
                   type: TEXT
                   constraints:

@@ -64,18 +64,16 @@ public class Compartment implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Compartment that)) {
+    if (!(o instanceof Compartment other)) {
       return false;
     }
-    if (this.compartmentId == null || that.getCompartmentId() == null) {
-      return false;
-    }
-    return Objects.equals(this.compartmentId, that.getCompartmentId());
+
+    return this.compartmentId != null && this.compartmentId.equals(other.compartmentId);
   }
 
   @Override
   public final int hashCode() {
-    return Objects.hash(this.compartmentId);
+    return Objects.hash(compartmentId);
   }
 
 }

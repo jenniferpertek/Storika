@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface CompartmentRepository extends JpaRepository<Compartment, UUID>, JpaSpecificationExecutor<Compartment> {
 
-  List<Compartment> findByStorageUnitId(UUID storageUnitId);
+  List<Compartment> findByStorageUnit_StorageUnitId(UUID storageUnitId);
 
   /**
    * Finds compartments based on optional filters for storage unit ID and name,

@@ -48,6 +48,6 @@ databaseChangeLog:
             constraintName: fk_storage_unit_location
             onDelete: RESTRICT
         - addUniqueConstraint:
-            tableName: storage_unit
+            tableName: storage_units
             columnNames: name, location_id
             constraintName: uk_storage_unit_name_location

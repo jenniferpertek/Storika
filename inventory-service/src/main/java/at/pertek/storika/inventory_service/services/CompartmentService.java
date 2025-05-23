@@ -147,7 +147,7 @@ public class CompartmentService {
 
     storageUnitService.getStorageUnitEntityById(storageUnitId);
 
-    return compartmentRepository.findByStorageUnitId(storageUnitId)
+    return compartmentRepository.findByStorageUnit_StorageUnitId(storageUnitId)
         .stream()
         .map(compartmentMapper::entityToDto)
         .toList();

@@ -16,12 +16,9 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Slf4j
 @AllArgsConstructor
@@ -178,7 +175,7 @@ public class ItemService {
 
     storageUnitService.getStorageUnitEntityById(storageUnitId);
 
-    return itemRepository.findByStorageUnitId(storageUnitId)
+    return itemRepository.findByStorageUnit_StorageUnitId(storageUnitId)
         .stream()
         .map(itemMapper::entityToDto)
         .toList();
@@ -190,7 +187,7 @@ public class ItemService {
 
     compartmentService.getCompartmentEntityById(compartmentId);
 
-    return itemRepository.findByCompartmentId(compartmentId)
+    return itemRepository.findByCompartment_CompartmentId(compartmentId)
         .stream()
         .map(itemMapper::entityToDto)
         .toList();
@@ -202,7 +199,7 @@ public class ItemService {
 
     categoryService.getCategoryEntityById(categoryId);
 
-    return itemRepository.findByCategoryId(categoryId)
+    return itemRepository.findByCategory_CategoryId(categoryId)
         .stream()
         .map(itemMapper::entityToDto)
         .toList();

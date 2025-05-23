@@ -12,11 +12,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface ItemRepository extends JpaRepository<Item, UUID>, JpaSpecificationExecutor<Item> {
 
-  List<Item> findByStorageUnitId(UUID storageUnitId);
+  List<Item> findByStorageUnit_StorageUnitId(UUID storageUnitId);
 
-  List<Item> findByCompartmentId(UUID compartmentId);
+  List<Item> findByCompartment_CompartmentId(UUID compartmentId);
 
-  List<Item> findByCategoryId(UUID categoryId);
+  List<Item> findByCategory_CategoryId(UUID categoryId);
 
   /**
    * Finds items based on a set of optional filter criteria, with pagination and sorting.

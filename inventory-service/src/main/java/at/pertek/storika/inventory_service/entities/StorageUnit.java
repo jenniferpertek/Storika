@@ -97,18 +97,16 @@ public class StorageUnit implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof StorageUnit that)) {
+    if (!(o instanceof StorageUnit other)) {
       return false;
     }
-    if (this.storageUnitId == null || that.getStorageUnitId() == null) {
-      return false;
-    }
-    return Objects.equals(this.storageUnitId, that.getStorageUnitId());
+
+    return this.storageUnitId != null && this.storageUnitId.equals(other.storageUnitId);
   }
 
   @Override
   public final int hashCode() {
-    return Objects.hash(this.storageUnitId);
+    return Objects.hash(storageUnitId);
   }
 
 }

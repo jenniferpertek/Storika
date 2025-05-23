@@ -26,12 +26,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "item")
+@Table(name = "items")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = {"category", "compartment"})
+@ToString(exclude = {"category", "storageUnit", "compartment"})
 @Hidden
 public class Item implements Serializable {
 
@@ -69,7 +69,7 @@ public class Item implements Serializable {
   private Category category;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "storage_unit_id", foreignKey = @ForeignKey(name = "fk_item_storage_unit"))
+  @JoinColumn(name = "storage_unit_id", foreignKey = @ForeignKey(name = "fk_item_storage_unit"), nullable = false)
   private StorageUnit storageUnit;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -89,19 +89,15 @@ public class Item implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Category that)) {
+    if (!(o instanceof Item other)) {
       return false;
     }
-    if (this.itemId == null || that.getCategoryId() == null) {
-      return false;
-    }
-
-    return Objects.equals(this.itemId, that.getCategoryId());
+    return this.itemId != null && this.itemId.equals(other.getItemId());
   }
 
   @Override
   public final int hashCode() {
-    return Objects.hash(this.itemId);
+    return Objects.hash(itemId);
   }
 
 }
