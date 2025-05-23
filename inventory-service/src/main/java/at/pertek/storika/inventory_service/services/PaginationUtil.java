@@ -30,7 +30,8 @@ public class PaginationUtil {
     String effectiveSortBy = null;
 
     if (StringUtils.hasText(sortBy)) {
-      if (allowedSortFields != null && !allowedSortFields.isEmpty() && !allowedSortFields.contains(sortBy.toLowerCase())) {
+      if (allowedSortFields != null && !allowedSortFields.isEmpty() &&
+          !allowedSortFields.contains(sortBy.toLowerCase())) {
         log.warn("Invalid sortBy parameter '{}'. Allowed fields are: {}", sortBy, allowedSortFields);
         throw new IllegalArgumentException("Invalid sortBy parameter: " + sortBy +
             ". Allowed sort fields are: " + allowedSortFields);

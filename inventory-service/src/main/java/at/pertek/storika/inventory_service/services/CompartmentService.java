@@ -34,9 +34,10 @@ public class CompartmentService {
   );
 
   @Transactional(readOnly = true)
-  public Page<CompartmentDto> getAllCompartments(UUID storageUnitId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.debug("Fetching compartments with filters - storageUnitId: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
-        storageUnitId, name, sortBy, sortOrder, page, size);
+  public Page<CompartmentDto> getAllCompartments(UUID storageUnitId, String name, String sortBy,
+                                                 String sortOrder, Integer page, Integer size) {
+    log.debug("Fetching compartments with filters - storageUnitId: [{}], name: [{}], sortBy: [{}], " +
+            "sortOrder: [{}], page: [{}], size: [{}]", storageUnitId, name, sortBy, sortOrder, page, size);
 
     Pageable pageable = PaginationUtil.createPageable(
         page,
@@ -110,7 +111,9 @@ public class CompartmentService {
       if (newActualStorageUnitId != null) {
         if (existingCompartment.getStorageUnit() == null ||
             !newActualStorageUnitId.equals(existingCompartment.getStorageUnit().getStorageUnitId())) {
-          log.debug("Updating storage unit for compartment id: {} to new storageUnitId: {}", compartmentId, newActualStorageUnitId);
+          log.debug("Updating storage unit for compartment id: {} to new storageUnitId: {}",
+              compartmentId, newActualStorageUnitId);
+
           StorageUnit newStorageUnit = storageUnitService.getStorageUnitEntityById(newActualStorageUnitId);
           existingCompartment.setStorageUnit(newStorageUnit);
         }

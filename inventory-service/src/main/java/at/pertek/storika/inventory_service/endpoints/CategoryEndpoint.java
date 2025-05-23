@@ -63,9 +63,10 @@ public class CategoryEndpoint implements CategoryApi {
    * @return A List of categories. (status code 200) or Internal Server Error (status code 500)
    */
   @Override
-  public ResponseEntity<List<CategoryDto>> getAllCategories(String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.info("getAllCategories request received with parameters - name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
-        name, sortBy, sortOrder, page, size);
+  public ResponseEntity<List<CategoryDto>> getAllCategories(String name, String sortBy, String sortOrder,
+                                                            Integer page, Integer size) {
+    log.info("getAllCategories request received with parameters - name: [{}], sortBy: [{}], " +
+            "sortOrder: [{}], page: [{}], size: [{}]", name, sortBy, sortOrder, page, size);
 
     Page<CategoryDto> categoriesPage = categoryService.getAllCategories(name, sortBy, sortOrder, page, size);
 
@@ -78,7 +79,8 @@ public class CategoryEndpoint implements CategoryApi {
     responseHeaders.add("X-Page-Size", String.valueOf(categoriesPage.getSize()));
 
     log.debug("Returning {} categories for page {} (size {}). Total items: {}, Total pages: {}",
-        categoriesOnPage.size(), categoriesPage.getNumber(), categoriesPage.getSize(), categoriesPage.getTotalElements(), categoriesPage.getTotalPages());
+        categoriesOnPage.size(), categoriesPage.getNumber(), categoriesPage.getSize(),
+        categoriesPage.getTotalElements(), categoriesPage.getTotalPages());
 
     return ResponseEntity.ok().headers(responseHeaders).body(categoriesOnPage);
   }

@@ -19,8 +19,10 @@ public interface ItemMapper {
 
   @Mapping(source = "itemId", target = "id")
   @Mapping(source = "storageUnit.storageUnitId", target = "storageUnitId")
-  @Mapping(target = "categoryId", expression = "java(CommonMapperUtils.categoryToUuidJsonNullable(item.getCategory()))")
-  @Mapping(target = "compartmentId", expression = "java(CommonMapperUtils.compartmentToUuidJsonNullable(item.getCompartment()))")
+  @Mapping(target = "categoryId",
+      expression = "java(CommonMapperUtils.categoryToUuidJsonNullable(item.getCategory()))")
+  @Mapping(target = "compartmentId",
+      expression = "java(CommonMapperUtils.compartmentToUuidJsonNullable(item.getCompartment()))")
   ItemDto entityToDto(Item item);
 
   void patchItemFromDto(ItemPatchDto itemPatchDto, @MappingTarget Item item);

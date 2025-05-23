@@ -34,9 +34,10 @@ public class StorageUnitService {
   );
 
   @Transactional(readOnly = true)
-  public Page<StorageUnitDto> getAllStorageUnits(UUID locationId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.debug("Fetching storageUnits with filters - locationId: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
-        locationId, name, sortBy, sortOrder, page, size);
+  public Page<StorageUnitDto> getAllStorageUnits(UUID locationId, String name, String sortBy,
+                                                 String sortOrder, Integer page, Integer size) {
+    log.debug("Fetching storageUnits with filters - locationId: [{}], name: [{}], sortBy: [{}], " +
+            "sortOrder: [{}], page: [{}], size: [{}]", locationId, name, sortBy, sortOrder, page, size);
 
     Pageable pageable = PaginationUtil.createPageable(
         page,
@@ -107,7 +108,9 @@ public class StorageUnitService {
       if (newActualLocationId != null) {
          if (existingStorageUnit.getLocation() == null ||
             !newActualLocationId.equals(existingStorageUnit.getLocation().getLocationId())) {
-          log.debug("Updating location for storage unit id: {} to new locationId: {}", storageUnitId, newActualLocationId);
+          log.debug("Updating location for storage unit id: {} to new locationId: {}",
+              storageUnitId, newActualLocationId);
+
           Location newLocation = locationService.getLocationEntityById(newActualLocationId);
           existingStorageUnit.setLocation(newLocation);
         }

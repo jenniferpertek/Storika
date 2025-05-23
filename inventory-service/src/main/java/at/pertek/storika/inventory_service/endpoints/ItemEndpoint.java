@@ -67,11 +67,17 @@ public class ItemEndpoint implements ItemApi {
    * (status code 500)
    */
   @Override
-  public ResponseEntity<List<ItemDto>> getAllItems(UUID categoryId, UUID storageUnitId, UUID compartmentId, Float quantity, Boolean isExpired, String sortBy, String sortOrder, String name, Integer page, Integer size) {
-    log.info("getAllItems request received with parameters - categoryId: [{}], storageUnitId: [{}], compartmentId: [{}], quantity: [{}], isExpired: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
+  public ResponseEntity<List<ItemDto>> getAllItems(UUID categoryId, UUID storageUnitId, UUID compartmentId,
+                                                   Float quantity, Boolean isExpired, String sortBy, String sortOrder,
+                                                   String name, Integer page, Integer size) {
+    log.info("getAllItems request received with parameters - categoryId: [{}], storageUnitId: [{}], " +
+            "compartmentId: [{}], quantity: [{}], isExpired: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], " +
+            "page: [{}], size: [{}]",
         categoryId, storageUnitId, compartmentId, quantity, isExpired, name, sortBy, sortOrder, page, size);
 
-    Page<ItemDto> itemsPage = itemService.getAllItems(categoryId, storageUnitId, compartmentId, quantity, isExpired, sortBy, sortOrder, name, page, size);
+    Page<ItemDto> itemsPage = itemService.getAllItems(
+        categoryId, storageUnitId, compartmentId, quantity, isExpired, sortBy, sortOrder, name, page, size
+    );
 
     List<ItemDto> itemsOnPage = itemsPage.getContent();
 
@@ -82,7 +88,8 @@ public class ItemEndpoint implements ItemApi {
     responseHeaders.add("X-Page-Size", String.valueOf(itemsPage.getSize()));
 
     log.debug("Returning {} items for page {} (size {}). Total items: {}, Total pages: {}",
-        itemsOnPage.size(), itemsPage.getNumber(), itemsPage.getSize(), itemsPage.getTotalElements(), itemsPage.getTotalPages());
+        itemsOnPage.size(), itemsPage.getNumber(), itemsPage.getSize(),
+        itemsPage.getTotalElements(), itemsPage.getTotalPages());
 
     return ResponseEntity.ok().headers(responseHeaders).body(itemsOnPage);
 

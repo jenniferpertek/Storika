@@ -63,9 +63,10 @@ public class LocationEndpoint implements LocationApi {
    * @return A list of locations. (status code 200) or Internal Server Error (status code 500)
    */
   @Override
-  public ResponseEntity<List<LocationDto>> getAllLocations(String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.info("getAllLocations request received with parameters - name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
-        name, sortBy, sortOrder, page, size);
+  public ResponseEntity<List<LocationDto>> getAllLocations(String name, String sortBy, String sortOrder,
+                                                           Integer page, Integer size) {
+    log.info("getAllLocations request received with parameters - name: [{}], sortBy: [{}], sortOrder: [{}], " +
+            "page: [{}], size: [{}]", name, sortBy, sortOrder, page, size);
 
     Page<LocationDto> locationsPage = locationService.getAllLocations(name, sortBy, sortOrder, page, size);
 

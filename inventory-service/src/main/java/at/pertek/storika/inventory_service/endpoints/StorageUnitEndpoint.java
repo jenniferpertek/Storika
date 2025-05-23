@@ -63,11 +63,14 @@ public class StorageUnitEndpoint implements StorageUnitApi {
    * @return List of storage units. (status code 200) or Internal Server Error (status code 500)
    */
   @Override
-  public ResponseEntity<List<StorageUnitDto>> getAllStorageUnits(UUID locationId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.info("getAllStorageUnits request received with parameters - locationId: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
-        locationId, name, sortBy, sortOrder, page, size);
+  public ResponseEntity<List<StorageUnitDto>> getAllStorageUnits(UUID locationId, String name, String sortBy,
+                                                                 String sortOrder, Integer page, Integer size) {
+    log.info("getAllStorageUnits request received with parameters - locationId: [{}], name: [{}], sortBy: [{}], " +
+            "sortOrder: [{}], page: [{}], size: [{}]", locationId, name, sortBy, sortOrder, page, size);
 
-    Page<StorageUnitDto> storageUnitsPage = storageUnitService.getAllStorageUnits(locationId, name, sortBy, sortOrder, page, size);
+    Page<StorageUnitDto> storageUnitsPage = storageUnitService.getAllStorageUnits(
+        locationId, name, sortBy, sortOrder, page, size
+    );
 
     List<StorageUnitDto> storageUnitsOnPage = storageUnitsPage.getContent();
 
@@ -78,7 +81,8 @@ public class StorageUnitEndpoint implements StorageUnitApi {
     responseHeaders.add("X-Page-Size", String.valueOf(storageUnitsPage.getSize()));
 
     log.debug("Returning {} storageUnits for page {} (size {}). Total items: {}, Total pages: {}",
-        storageUnitsOnPage.size(), storageUnitsPage.getNumber(), storageUnitsPage.getSize(), storageUnitsPage.getTotalElements(), storageUnitsPage.getTotalPages());
+        storageUnitsOnPage.size(), storageUnitsPage.getNumber(), storageUnitsPage.getSize(),
+        storageUnitsPage.getTotalElements(), storageUnitsPage.getTotalPages());
 
     return ResponseEntity.ok().headers(responseHeaders).body(storageUnitsOnPage);
   }

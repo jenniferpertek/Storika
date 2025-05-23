@@ -63,11 +63,14 @@ public class CompartmentEndpoint implements CompartmentApi {
    * @return List of compartments. (status code 200) or Internal Server Error (status code 500)
    */
   @Override
-  public ResponseEntity<List<CompartmentDto>> getAllCompartments(UUID storageUnitId, String name, String sortBy, String sortOrder, Integer page, Integer size) {
-    log.info("getAllCompartments request received with parameters - storageUnitId: [{}], name: [{}], sortBy: [{}], sortOrder: [{}], page: [{}], size: [{}]",
-        storageUnitId, name, sortBy, sortOrder, page, size);
+  public ResponseEntity<List<CompartmentDto>> getAllCompartments(UUID storageUnitId, String name, String sortBy,
+                                                                 String sortOrder, Integer page, Integer size) {
+    log.info("getAllCompartments request received with parameters - storageUnitId: [{}], name: [{}], sortBy: [{}], " +
+            "sortOrder: [{}], page: [{}], size: [{}]", storageUnitId, name, sortBy, sortOrder, page, size);
 
-    Page<CompartmentDto> compartmentsPage = compartmentService.getAllCompartments(storageUnitId, name, sortBy, sortOrder, page, size);
+    Page<CompartmentDto> compartmentsPage = compartmentService.getAllCompartments(
+        storageUnitId, name, sortBy, sortOrder, page, size
+    );
 
     List<CompartmentDto> compartmentsOnPage = compartmentsPage.getContent();
 
@@ -78,7 +81,8 @@ public class CompartmentEndpoint implements CompartmentApi {
     responseHeaders.add("X-Page-Size", String.valueOf(compartmentsPage.getSize()));
 
     log.debug("Returning {} compartments for page {} (size {}). Total items: {}, Total pages: {}",
-        compartmentsOnPage.size(), compartmentsPage.getNumber(), compartmentsPage.getSize(), compartmentsPage.getTotalElements(), compartmentsPage.getTotalPages());
+        compartmentsOnPage.size(), compartmentsPage.getNumber(), compartmentsPage.getSize(),
+        compartmentsPage.getTotalElements(), compartmentsPage.getTotalPages());
 
     return ResponseEntity.ok().headers(responseHeaders).body(compartmentsOnPage);
   }
